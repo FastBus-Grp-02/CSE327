@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FastBus</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .nav-logo h2 {
+            color: #667eea;
+            font-size: 1.8rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-left: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #667eea;
+        }
+
+        /* Admin Dashboard */
+        .admin-dashboard {
+            background: rgba(255, 255, 255, 0.95);
+            min-height: calc(100vh - 140px);
+            padding: 2rem 0;
+        }
+
+        .admin-dashboard h1 {
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .admin-tabs {
+            display: flex;
+            border-bottom: 2px solid #e1e5e9;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .admin-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .edit-btn, .delete-btn, .view-btn, .add-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+
+        .edit-btn {
+            background: #ffd43b;
+            color: #333;
+        }
+
+        .delete-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .view-btn {
+            background: #339af0;
+            color: white;
+        }
+
+        .add-btn {
+            background: #51cf66;
+            color: white;
+            padding: 10px 20px;
+            margin-bottom: 1rem;
+        }
+
+        .report-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .report-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .report-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: white;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                display: none;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-item {
+                margin: 0;
+                padding: 1rem;
+                border-bottom: 1px solid #e1e5e9;
+            }
+
+            .admin-tabs {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                text-align: left;
+            }
+
+            .admin-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h2>FastBus Admin</h2>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Site Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="admin-dashboard">
+            <div class="container">
+                <h1>Admin Dashboard</h1>
+                
+                <div class="admin-tabs">
+                    <button class="tab-button active" onclick="openAdminTab(event, 'users')">Users</button>
+                    <button class="tab-button" onclick="openAdminTab(event, 'bookings')">Bookings</button>
+                    <button class="tab-button" onclick="openAdminTab(event, 'buses')">Buses & Routes</button>
+                    <button class="tab-button" onclick="openAdminTab(event, 'reports')">Reports</button>
+                </div>
+
+                <div id="users" class="tab-content active">
+                    <h2>User Management</h2>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>John Doe</td>
+                                <td>john@example.com</td>
+                                <td>+8801XXXXXXXXX</td>
+                                <td>
+                                    <button class="edit-btn">Edit</button>
+                                    <button class="delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="bookings" class="tab-content">
+                    <h2>Booking Management</h2>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>User</th>
+                                <th>Route</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>B001</td>
+                                <td>John Doe</td>
+                                <td>Dhaka to Chittagong</td>
+                                <td>2023-12-15</td>
+                                <td>Confirmed</td>
+                                <td>
+                                    <button class="view-btn">View</button>
+                                    <button class="cancel-btn">Cancel</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="buses" class="tab-content">
+                    <h2>Bus & Route Management</h2>
+                    <button class="add-btn">Add New Bus</button>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Bus ID</th>
+                                <th>Bus Name</th>
+                                <th>Route</th>
+                                <th>Departure</th>
+                                <th>Arrival</th>
+                                <th>Fare</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>BUS001</td>
+                                <td>Green Line Paribahan</td>
+                                <td>Dhaka to Chittagong</td>
+                                <td>08:00 AM</td>
+                                <td>02:00 PM</td>
+                                <td>৳ 1200</td>
+                                <td>
+                                    <button class="edit-btn">Edit</button>
+                                    <button class="delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="reports" class="tab-content">
+                    <h2>Reports & Analytics</h2>
+                    <div class="report-cards">
+                        <div class="report-card">
+                            <h3>Total Bookings</h3>
+                            <p class="report-number">150</p>
+                        </div>
+                        <div class="report-card">
+                            <h3>Total Revenue</h3>
+                            <p class="report-number">৳ 180,000</p>
+                        </div>
+                        <div class="report-card">
+                            <h3>Active Users</h3>
+                            <p class="report-number">85</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 FastBus. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function openAdminTab(evt, tabName) {
+            var i, tabcontent, tabbuttons;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            tabbuttons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabbuttons.length; i++) {
+                tabbuttons[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+    </script>
+</body>
+</html>
