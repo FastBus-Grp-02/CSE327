@@ -1,0 +1,29 @@
+# Core Framework
+Flask
+Werkzeug
+
+# Database
+Flask-SQLAlchemy
+psycopg2-binary
+Flask-Migrate
+
+# Authentication & Security
+Flask-JWT-Extended
+PyJWT
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+requests
+
+# Environment Management
+python-dotenv
+
+# Validation
+email-validator
+
+# Development Tools (optional)
+flask-cors
+
+# Production Server (recommended)
+gunicorn
+

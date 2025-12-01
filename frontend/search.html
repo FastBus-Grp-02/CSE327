@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Trips - FastBus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --error: #ef4444;
+            --success: #10b981;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #f9fafb;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--white);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Search Section */
+        .search-section {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: 32px 0;
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .search-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        input, select {
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn-search {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: end;
+        }
+
+        .btn-search:hover, .btn-search:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            outline: 2px solid var(--primary-dark);
+            outline-offset: 2px;
+        }
+
+        .btn-search:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-search:focus:disabled {
+            outline: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 32px auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+        }
+
+        /* Filters Sidebar */
+        .filters {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            height: fit-content;
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .filters h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .filter-group {
+            margin-bottom: 24px;
+        }
+
+        .filter-group h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 400;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .price-range {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .price-range input {
+            width: 100%;
+        }
+
+        /* Results Section */
+        .results {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .results-header {
+            background: var(--white);
+            padding: 16px 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .results-count {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .sort-controls label {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .sort-controls select {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        /* Trip Card */
+        .trip-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px var(--shadow);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .trip-card:hover {
+            box-shadow: 0 4px 12px var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .trip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .trip-route {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .location {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .city {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .time {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .route-line {
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+            position: relative;
+        }
+
+        .route-line::before {
+            content: '→';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--white);
+            padding: 0 8px;
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .trip-price {
+            text-align: right;
+        }
+
+        .price {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .price-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .trip-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            padding: 16px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .detail {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .seats-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #d1fae5;
+            color: var(--success);
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn-book {
+            margin-top: 16px;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-book:hover, .btn-book:focus {
+            background: var(--primary-dark);
+            outline: 2px solid var(--primary-dark);
+            outline-offset: 2px;
+        }
+
+        /* Loading & Empty States */
+        .loading, .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+        }
+
+        /* Alert */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: var(--error);
+            border: 1px solid #fecaca;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                display: none;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-menu {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .trip-route {
+                flex-direction: column;
+                align-items: start;
+                gap: 8px;
+            }
+
+            .route-line {
+                width: 2px;
+                height: 30px;
+                margin-left: 40px;
+            }
+
+            .route-line::before {
+                content: '↓';
+                left: 50%;
+                top: 50%;
+            }
+
+            .trip-header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .trip-price {
+                text-align: left;
+                width: 100%;
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Autocomplete Styles */
+        .autocomplete-container {
+            position: relative;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border: 2px solid var(--primary);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 12px var(--shadow);
+            display: none;
+        }
+
+        .autocomplete-dropdown.show {
+            display: block;
+        }
+
+        .autocomplete-item {
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .autocomplete-item:hover {
+            background: var(--bg);
+        }
+
+        .autocomplete-item.active {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .autocomplete-item.selected {
+            background: rgba(99, 102, 241, 0.2);
+            font-weight: 600;
+        }
+
+        .autocomplete-no-results {
+            padding: 10px 14px;
+            font-size: 14px;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .autocomplete-loading {
+            padding: 10px 14px;
+            font-size: 14px;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        input.has-selection {
+            border-color: var(--success);
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+
+        input.invalid-selection {
+            border-color: var(--error);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <h1 onclick="window.location.href='index.html'" style="cursor: pointer;">FastBus</h1>
+            </div>
+            <div class="user-info">
+                <span class="user-name" id="userName">Guest</span>
+                <div class="nav-menu">
+                    <a href="my-bookings.html" class="nav-btn">My Bookings</a>
+                    <a href="profile.html" class="nav-btn">Profile</a>
+                    <button class="nav-btn" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="search-container">
+            <form class="search-form" id="searchForm">
+                <div class="form-group">
+                    <label for="origin">From</label>
+                    <div class="autocomplete-container">
+                        <input type="text" id="origin" placeholder="Select origin city" required autocomplete="off">
+                        <div class="autocomplete-dropdown" id="originDropdown"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="destination">To</label>
+                    <div class="autocomplete-container">
+                        <input type="text" id="destination" placeholder="Select destination city" required autocomplete="off">
+                        <div class="autocomplete-dropdown" id="destinationDropdown"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="seats">Seats</label>
+                    <input type="number" id="seats" value="1" min="1" max="10">
+                </div>
+                <button type="submit" class="btn-search" id="searchBtn">
+                    <span id="searchBtnText">Search</span>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Filters Sidebar -->
+        <aside class="filters">
+            <h3>Filters</h3>
+            
+            <div class="filter-group">
+                <h4>Price Range</h4>
+                <div class="price-range">
+                    <input type="number" id="minPrice" placeholder="Min" min="0">
+                    <span>-</span>
+                    <input type="number" id="maxPrice" placeholder="Max" min="0">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h4>Seat Class</h4>
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" value="economy" class="seat-class-filter" checked>
+                        Economy
+                    </label>
+                    <label>
+                        <input type="checkbox" value="business" class="seat-class-filter">
+                        Business
+                    </label>
+                    <label>
+                        <input type="checkbox" value="first_class" class="seat-class-filter">
+                        First Class
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h4>Departure Time</h4>
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" value="morning" class="time-filter">
+                        Morning (6AM - 12PM)
+                    </label>
+                    <label>
+                        <input type="checkbox" value="afternoon" class="time-filter">
+                        Afternoon (12PM - 6PM)
+                    </label>
+                    <label>
+                        <input type="checkbox" value="evening" class="time-filter">
+                        Evening (6PM - 12AM)
+                    </label>
+                    <label>
+                        <input type="checkbox" value="night" class="time-filter">
+                        Night (12AM - 6AM)
+                    </label>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Results Section -->
+        <section class="results">
+            <div id="alert" class="alert"></div>
+            
+            <div class="results-header" id="resultsHeader" style="display: none;">
+                <span class="results-count" id="resultsCount">0 trips found</span>
+                <div class="sort-controls">
+                    <label for="sortBy">Sort by:</label>
+                    <select id="sortBy">
+                        <option value="departure_time">Departure Time</option>
+                        <option value="price">Price</option>
+                        <option value="duration">Duration</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="resultsContainer">
+                <div class="empty-state">
+                    <h3>Search for trips</h3>
+                    <p>Enter your travel details above to find available trips</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let allTrips = [];
+        let currentSearchParams = {};
+        let allCities = [];
+        let selectedOrigin = null;
+        let selectedDestination = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            setupEventListeners();
+            setMinDate();
+            loadCities();
+        });
+
+        function checkAuth() {
+            const token = localStorage.getItem('access_token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (!token) {
+                if (confirm('You need to login to search trips. Go to login page?')) {
+                    window.location.href = 'login.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+                return;
+            }
+
+            const username = user.username || user.first_name || user.email || 'User';
+            document.getElementById('userName').textContent = username;
+        }
+
+        async function loadCities() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/trips/cities`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    allCities = data.cities || [];
+                } else {
+                    console.error('Failed to load cities:', data.error);
+                }
+            } catch (error) {
+                console.error('Error loading cities:', error);
+            }
+        }
+
+        function initAutocomplete(inputId, dropdownId, selectionVar) {
+            const input = document.getElementById(inputId);
+            const dropdown = document.getElementById(dropdownId);
+            let activeIndex = -1;
+
+            input.addEventListener('input', function() {
+                const value = this.value.trim().toLowerCase();
+                
+                // Clear selection when user types
+                if (selectionVar === 'origin') {
+                    selectedOrigin = null;
+                } else {
+                    selectedDestination = null;
+                }
+                input.classList.remove('has-selection');
+                
+                if (value.length === 0) {
+                    dropdown.classList.remove('show');
+                    return;
+                }
+
+                // Filter cities
+                const filtered = allCities.filter(city => 
+                    city.toLowerCase().includes(value)
+                );
+
+                if (filtered.length === 0) {
+                    dropdown.innerHTML = '<div class="autocomplete-no-results">No cities found</div>';
+                    dropdown.classList.add('show');
+                    return;
+                }
+
+                // Display results
+                dropdown.innerHTML = filtered.map((city, index) => 
+                    `<div class="autocomplete-item" data-index="${index}" data-city="${city}">${city}</div>`
+                ).join('');
+                dropdown.classList.add('show');
+                activeIndex = -1;
+
+                // Add click handlers
+                dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        selectCity(this.dataset.city, inputId, dropdownId, selectionVar);
+                    });
+                });
+            });
+
+            input.addEventListener('keydown', function(e) {
+                const items = dropdown.querySelectorAll('.autocomplete-item');
+                
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    activeIndex = (activeIndex + 1) % items.length;
+                    updateActiveItem(items, activeIndex);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    activeIndex = activeIndex <= 0 ? items.length - 1 : activeIndex - 1;
+                    updateActiveItem(items, activeIndex);
+                } else if (e.key === 'Enter' && activeIndex >= 0) {
+                    e.preventDefault();
+                    items[activeIndex].click();
+                } else if (e.key === 'Escape') {
+                    dropdown.classList.remove('show');
+                    activeIndex = -1;
+                }
+            });
+
+            input.addEventListener('focus', function() {
+                if (this.value.trim().length > 0) {
+                    const value = this.value.trim().toLowerCase();
+                    const filtered = allCities.filter(city => 
+                        city.toLowerCase().includes(value)
+                    );
+                    
+                    if (filtered.length > 0) {
+                        dropdown.innerHTML = filtered.map((city, index) => 
+                            `<div class="autocomplete-item" data-index="${index}" data-city="${city}">${city}</div>`
+                        ).join('');
+                        dropdown.classList.add('show');
+                        
+                        dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+                            item.addEventListener('click', function() {
+                                selectCity(this.dataset.city, inputId, dropdownId, selectionVar);
+                            });
+                        });
+                    }
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                    activeIndex = -1;
+                }
+            });
+        }
+
+        function updateActiveItem(items, activeIndex) {
+            items.forEach((item, index) => {
+                if (index === activeIndex) {
+                    item.classList.add('active');
+                    item.scrollIntoView({ block: 'nearest' });
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        function selectCity(city, inputId, dropdownId, selectionVar) {
+            const input = document.getElementById(inputId);
+            const dropdown = document.getElementById(dropdownId);
+            
+            input.value = city;
+            input.classList.add('has-selection');
+            dropdown.classList.remove('show');
+            
+            if (selectionVar === 'origin') {
+                selectedOrigin = city;
+            } else {
+                selectedDestination = city;
+            }
+        }
+
+        function setMinDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').setAttribute('min', today);
+            document.getElementById('date').value = today;
+        }
+
+        function setupEventListeners() {
+            document.getElementById('searchForm').addEventListener('submit', handleSearch);
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            document.getElementById('sortBy').addEventListener('change', applySortAndFilter);
+            
+            // Filter listeners
+            document.querySelectorAll('.seat-class-filter, .time-filter').forEach(filter => {
+                filter.addEventListener('change', applySortAndFilter);
+            });
+            
+            document.getElementById('minPrice').addEventListener('input', debounce(applySortAndFilter, 500));
+            document.getElementById('maxPrice').addEventListener('input', debounce(applySortAndFilter, 500));
+            
+            // Initialize autocomplete
+            initAutocomplete('origin', 'originDropdown', 'origin');
+            initAutocomplete('destination', 'destinationDropdown', 'destination');
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        async function handleSearch(e) {
+            e.preventDefault();
+            
+            const originInput = document.getElementById('origin');
+            const destinationInput = document.getElementById('destination');
+            const origin = originInput.value.trim();
+            const destination = destinationInput.value.trim();
+            const date = document.getElementById('date').value;
+            const seats = document.getElementById('seats').value;
+
+            if (!origin || !destination || !date) {
+                showAlert('Please fill in all required fields', 'error');
+                return;
+            }
+
+            // Validate that selected values are from the dropdown
+            if (!selectedOrigin || selectedOrigin !== origin) {
+                originInput.classList.add('invalid-selection');
+                showAlert('Please select origin city from the dropdown suggestions', 'error');
+                return;
+            }
+
+            if (!selectedDestination || selectedDestination !== destination) {
+                destinationInput.classList.add('invalid-selection');
+                showAlert('Please select destination city from the dropdown suggestions', 'error');
+                return;
+            }
+
+            // Clear invalid states
+            originInput.classList.remove('invalid-selection');
+            destinationInput.classList.remove('invalid-selection');
+
+            currentSearchParams = { origin, destination, date, seats };
+            
+            const searchBtn = document.getElementById('searchBtn');
+            searchBtn.disabled = true;
+            document.getElementById('searchBtnText').textContent = 'Searching...';
+            
+            document.getElementById('resultsContainer').innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Searching for trips...</p></div>';
+
+            try {
+                const params = new URLSearchParams({
+                    origin,
+                    destination,
+                    date,
+                    seats,
+                    sort_by: 'departure_time',
+                    sort_order: 'asc'
+                });
+
+                const response = await fetch(`${API_BASE_URL}/trips/search?${params}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    allTrips = data.trips || [];
+                    displayResults(allTrips);
+                    document.getElementById('resultsHeader').style.display = 'flex';
+                } else {
+                    showAlert(data.error || 'Failed to search trips', 'error');
+                    displayEmptyState();
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                const isNetworkError = !navigator.onLine || error.message.includes('Failed to fetch');
+                const errorMsg = isNetworkError 
+                    ? 'Network error. Please check your internet connection.' 
+                    : 'Connection error. Please check if the server is running.';
+                showAlert(errorMsg, 'error');
+                displayEmptyState();
+            } finally {
+                searchBtn.disabled = false;
+                document.getElementById('searchBtnText').textContent = 'Search';
+            }
+        }
+
+        function applySortAndFilter() {
+            if (allTrips.length === 0) return;
+
+            let filteredTrips = [...allTrips];
+
+            // Apply price filter
+            const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+            filteredTrips = filteredTrips.filter(trip => 
+                trip.base_fare >= minPrice && trip.base_fare <= maxPrice
+            );
+
+            // Apply time filter
+            const timeFilters = Array.from(document.querySelectorAll('.time-filter:checked')).map(cb => cb.value);
+            if (timeFilters.length > 0) {
+                filteredTrips = filteredTrips.filter(trip => {
+                    const hour = new Date(trip.departure_time).getHours();
+                    return timeFilters.some(filter => {
+                        if (filter === 'morning') return hour >= 6 && hour < 12;
+                        if (filter === 'afternoon') return hour >= 12 && hour < 18;
+                        if (filter === 'evening') return hour >= 18 && hour < 24;
+                        if (filter === 'night') return hour >= 0 && hour < 6;
+                        return false;
+                    });
+                });
+            }
+
+            // Apply sort
+            const sortBy = document.getElementById('sortBy').value;
+            filteredTrips.sort((a, b) => {
+                if (sortBy === 'price') return a.base_fare - b.base_fare;
+                if (sortBy === 'duration') return a.duration_minutes - b.duration_minutes;
+                return new Date(a.departure_time) - new Date(b.departure_time);
+            });
+
+            displayResults(filteredTrips);
+        }
+
+        function displayResults(trips) {
+            const container = document.getElementById('resultsContainer');
+            document.getElementById('resultsCount').textContent = `${trips.length} trip${trips.length !== 1 ? 's' : ''} found`;
+
+            if (trips.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No trips found</h3>
+                        <p>Try adjusting your search criteria or filters</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = trips.map(trip => createTripCard(trip)).join('');
+        }
+
+        function createTripCard(trip) {
+            const departureTime = new Date(trip.departure_time);
+            const arrivalTime = new Date(trip.arrival_time);
+            const duration = formatDuration(trip.duration_minutes);
+
+            return `
+                <div class="trip-card">
+                    <div class="trip-header">
+                        <div class="trip-route">
+                            <div class="location">
+                                <div class="city">${trip.origin}</div>
+                                <div class="time">${formatTime(departureTime)}</div>
+                            </div>
+                            <div class="route-line"></div>
+                            <div class="location">
+                                <div class="city">${trip.destination}</div>
+                                <div class="time">${formatTime(arrivalTime)}</div>
+                            </div>
+                        </div>
+                        <div class="trip-price">
+                            <div class="price">৳${trip.base_fare}</div>
+                            <div class="price-label">per seat</div>
+                        </div>
+                    </div>
+                    <div class="trip-details">
+                        <div class="detail">
+                            <span class="detail-label">Operator</span>
+                            <span class="detail-value">${trip.operator_name}</span>
+                        </div>
+                        <div class="detail">
+                            <span class="detail-label">Duration</span>
+                            <span class="detail-value">${duration}</span>
+                        </div>
+                        <div class="detail">
+                            <span class="detail-label">Vehicle</span>
+                            <span class="detail-value">${trip.vehicle_type || 'Bus'}</span>
+                        </div>
+                        <div class="detail">
+                            <span class="detail-label">Available Seats</span>
+                            <span class="seats-badge">${trip.available_seats} seats</span>
+                        </div>
+                    </div>
+                    <button class="btn-book" onclick="bookTrip(${trip.id})">Book Now</button>
+                </div>
+            `;
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+        }
+
+        function formatDuration(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+        }
+
+        function bookTrip(tripId) {
+            // Store trip ID for booking flow
+            sessionStorage.setItem('selectedTripId', tripId);
+            window.location.href = `trip-details.html?id=${tripId}`;
+        }
+
+        function displayEmptyState() {
+            document.getElementById('resultsContainer').innerHTML = `
+                <div class="empty-state">
+                    <h3>No trips found</h3>
+                    <p>Try searching with different criteria</p>
+                </div>
+            `;
+        }
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alert');
+            alertBox.textContent = message;
+            alertBox.className = `alert ${type}`;
+            alertBox.style.display = 'block';
+            
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                localStorage.removeItem('user');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>
+

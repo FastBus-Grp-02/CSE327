@@ -1,0 +1,2483 @@
+{
+  "info": {
+    "name": "FastBus API",
+    "description": "Complete API collection for FastBus - Bus/Train Ticket Booking System\n\nGenerated on: 2025-11-26T09:25:44.166869+00:00Z\n\n⚠️ **IMPORTANT**: This collection includes demo/mock payment endpoints. No real financial transactions are processed.\n\n## Setup Instructions\n\n1. Set the `base_url` variable to your API URL (e.g., http://localhost:5000)\n2. Sign up or login to get an access token\n3. The access token will be automatically available as `{{access_token}}`\n4. For admin endpoints, login with an admin account\n\n## Authentication\n\nMost endpoints require a JWT token in the Authorization header:\n`Authorization: Bearer {{access_token}}`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "description": "User authentication and authorization endpoints",
+      "item": [
+        {
+          "name": "Sign Up",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/signup",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "signup"
+              ]
+            },
+            "description": "Register a new user account.\n\n**Role Options:**\n- `customer` (default)\n- `admin`",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"username\": \"johndoe\",\n  \"password\": \"SecurePass123!\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"role\": \"customer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login with email/username and password.\n\nYou can use either `email` or `username` field.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "Get a new access token using refresh token.\n\nChange Authorization header to use `{{refresh_token}}`"
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Get currently authenticated user information"
+          }
+        },
+        {
+          "name": "Verify Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/verify-token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verify-token"
+              ]
+            },
+            "description": "Verify if the current token is valid"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Logout (client should delete stored tokens)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "👤 User Profile",
+      "description": "User profile management endpoints",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "profile"
+              ]
+            },
+            "description": "Get current user profile information"
+          }
+        },
+        {
+          "name": "Update Profile (Full)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "profile"
+              ]
+            },
+            "description": "Update user profile (full update). Only provided fields will be updated.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Smith\",\n  \"username\": \"janesmith\",\n  \"email\": \"jane.smith@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update Profile (Partial)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "profile"
+              ]
+            },
+            "description": "Partially update user profile. Only provided fields will be updated.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Jane\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/profile/password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "profile",
+                "password"
+              ]
+            },
+            "description": "Change user password. Requires current password verification.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"SecurePass123!\",\n  \"new_password\": \"NewSecurePass456!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update Name",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/profile/name",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "profile",
+                "name"
+              ]
+            },
+            "description": "Update user first and last name",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Doe\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🚌 Trips",
+      "description": "Trip search and information endpoints",
+      "item": [
+        {
+          "name": "Search Trips",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trips/search",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "trips",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "origin",
+                  "value": "New York",
+                  "description": "Starting location (required)"
+                },
+                {
+                  "key": "destination",
+                  "value": "Boston",
+                  "description": "Destination (required)"
+                },
+                {
+                  "key": "date",
+                  "value": "2025-12-03",
+                  "description": "Travel date YYYY-MM-DD (required)"
+                },
+                {
+                  "key": "seats",
+                  "value": "2",
+                  "description": "Number of seats needed"
+                },
+                {
+                  "key": "seat_class",
+                  "value": "economy",
+                  "description": "Seat class filter",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_by",
+                  "value": "price",
+                  "description": "Sort by: price, departure_time, duration",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_order",
+                  "value": "asc",
+                  "description": "Sort order: asc, desc",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Search for available trips"
+          }
+        },
+        {
+          "name": "Get Trip Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trips/:trip_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "trips",
+                ":trip_id"
+              ],
+              "variable": [
+                {
+                  "key": "trip_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get detailed trip information including available seats"
+          }
+        },
+        {
+          "name": "Get Available Seats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trips/:trip_id/seats/available",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "trips",
+                ":trip_id",
+                "seats",
+                "available"
+              ],
+              "variable": [
+                {
+                  "key": "trip_id",
+                  "value": "1"
+                }
+              ],
+              "query": [
+                {
+                  "key": "seat_class",
+                  "value": "economy",
+                  "description": "Filter by seat class",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get available seats for a specific trip"
+          }
+        },
+        {
+          "name": "Calculate Fare",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trips/fare/calculate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "trips",
+                "fare",
+                "calculate"
+              ]
+            },
+            "description": "Calculate fare for selected trip and seats with optional promo code",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trip_id\": 1,\n  \"seat_ids\": [\n    1,\n    2\n  ],\n  \"promo_code\": \"SUMMER2024\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Active Promo Codes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trips/promo-codes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "trips",
+                "promo-codes"
+              ]
+            },
+            "description": "Get all currently active promo codes"
+          }
+        },
+        {
+          "name": "Get Promo Code Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trips/promo-codes/:code",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "trips",
+                "promo-codes",
+                ":code"
+              ],
+              "variable": [
+                {
+                  "key": "code",
+                  "value": "SUMMER2024"
+                }
+              ]
+            },
+            "description": "Get details of a specific promo code"
+          }
+        },
+        {
+          "name": "Validate Promo Code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trips/promo-codes/validate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "trips",
+                "promo-codes",
+                "validate"
+              ]
+            },
+            "description": "Validate a promo code for current user",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SUMMER2024\",\n  \"amount\": 150.0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📝 Bookings",
+      "description": "Booking management endpoints",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bookings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ]
+            },
+            "description": "Create a new booking for a trip",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trip_id\": 1,\n  \"seat_ids\": [\n    1,\n    2\n  ],\n  \"passenger_name\": \"John Doe\",\n  \"passenger_email\": \"john.doe@example.com\",\n  \"passenger_phone\": \"+1-234-567-8900\",\n  \"promo_code\": \"SUMMER2024\",\n  \"special_requests\": \"Window seat preferred\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get User Bookings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bookings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bookings"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "confirmed",
+                  "description": "Filter by status",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Results limit (1-100)"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Pagination offset"
+                }
+              ]
+            },
+            "description": "Get all bookings for current user"
+          }
+        },
+        {
+          "name": "Get Booking by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bookings/:booking_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                ":booking_id"
+              ],
+              "variable": [
+                {
+                  "key": "booking_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get details of a specific booking"
+          }
+        },
+        {
+          "name": "Get Booking by Reference",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bookings/reference/:booking_reference",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                "reference",
+                ":booking_reference"
+              ],
+              "variable": [
+                {
+                  "key": "booking_reference",
+                  "value": "BK123456"
+                }
+              ]
+            },
+            "description": "Get booking details by booking reference code"
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bookings/:booking_id/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                ":booking_id",
+                "cancel"
+              ],
+              "variable": [
+                {
+                  "key": "booking_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Cancel a booking and free up seats"
+          }
+        },
+        {
+          "name": "Update Payment Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/bookings/:booking_id/payment",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bookings",
+                ":booking_id",
+                "payment"
+              ],
+              "variable": [
+                {
+                  "key": "booking_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Update payment status for a booking",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_status\": \"paid\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💳 Payments (DEMO)",
+      "description": "⚠️ **MOCK PAYMENT SYSTEM** - No real money is processed!\n\nThese endpoints simulate payment processing for testing purposes.",
+      "item": [
+        {
+          "name": "Get Payment Methods",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/payments/methods",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "methods"
+              ]
+            },
+            "description": "Get available payment methods (DEMO)"
+          }
+        },
+        {
+          "name": "Get Test Scenarios",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/payments/test-scenarios",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "test-scenarios"
+              ]
+            },
+            "description": "Get available test scenarios for payment simulation"
+          }
+        },
+        {
+          "name": "Initiate Payment (Credit Card)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/payments/initiate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "initiate"
+              ]
+            },
+            "description": "⚠️ DEMO: Initiate a payment with credit card",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": 1,\n  \"payment_method\": \"credit_card\",\n  \"payment_details\": {\n    \"card_number\": \"4111111111111111\",\n    \"card_holder\": \"JOHN DOE\",\n    \"expiry_month\": \"12\",\n    \"expiry_year\": \"2025\",\n    \"cvv\": \"123\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Initiate Payment (UPI)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/payments/initiate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "initiate"
+              ]
+            },
+            "description": "⚠️ DEMO: Initiate a payment with UPI",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": 1,\n  \"payment_method\": \"upi\",\n  \"payment_details\": {\n    \"upi_id\": \"john@paytm\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Process Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/payments/:payment_id/process",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                ":payment_id",
+                "process"
+              ],
+              "variable": [
+                {
+                  "key": "payment_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "⚠️ DEMO: Process/complete a payment transaction\n\nUse `test_scenario` to simulate different outcomes:\n- success\n- insufficient_funds\n- invalid_card\n- network_error\n- timeout\n- declined",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"test_scenario\": \"success\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Payment Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/payments/:payment_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                ":payment_id"
+              ],
+              "variable": [
+                {
+                  "key": "payment_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get payment transaction status"
+          }
+        },
+        {
+          "name": "Get Payments for Booking",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/payments/booking/:booking_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "booking",
+                ":booking_id"
+              ],
+              "variable": [
+                {
+                  "key": "booking_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get all payment attempts for a booking"
+          }
+        },
+        {
+          "name": "Get Payment History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/payments/history",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "history"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Results limit"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Pagination offset"
+                },
+                {
+                  "key": "status",
+                  "value": "success",
+                  "description": "Filter by status",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get payment history for current user"
+          }
+        },
+        {
+          "name": "Request Refund",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/payments/:payment_id/refund",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                ":payment_id",
+                "refund"
+              ],
+              "variable": [
+                {
+                  "key": "payment_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "⚠️ DEMO: Request a refund for a successful payment",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refund_amount\": 100.0,\n  \"reason\": \"Customer requested refund\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔧 Admin - Trips",
+      "description": "Admin endpoints for trip management (requires admin role)",
+      "item": [
+        {
+          "name": "Create Trip",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/trips",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "trips"
+              ]
+            },
+            "description": "**Admin Only:** Create a new trip",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trip_number\": \"TRK001\",\n  \"origin\": \"New York\",\n  \"destination\": \"Boston\",\n  \"departure_time\": \"2025-12-03T09:25:44.166823+00:00Z\",\n  \"arrival_time\": \"2025-12-03T13:25:44.166823+00:00Z\",\n  \"base_fare\": 49.99,\n  \"total_seats\": 50,\n  \"operator_name\": \"Express Transit\",\n  \"vehicle_type\": \"Luxury Coach\",\n  \"amenities\": \"WiFi, AC, Reclining Seats\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get All Trips",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/trips",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "trips"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "scheduled",
+                  "description": "Filter by status",
+                  "disabled": true
+                },
+                {
+                  "key": "origin",
+                  "value": "New York",
+                  "description": "Filter by origin",
+                  "disabled": true
+                },
+                {
+                  "key": "destination",
+                  "value": "Boston",
+                  "description": "Filter by destination",
+                  "disabled": true
+                },
+                {
+                  "key": "date_from",
+                  "value": "2025-11-26",
+                  "description": "From date YYYY-MM-DD",
+                  "disabled": true
+                },
+                {
+                  "key": "date_to",
+                  "value": "2025-12-26",
+                  "description": "To date YYYY-MM-DD",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Results limit"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Pagination offset"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "departure_time",
+                  "description": "Sort field",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_order",
+                  "value": "asc",
+                  "description": "Sort order",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "**Admin Only:** Get all trips with filtering"
+          }
+        },
+        {
+          "name": "Get Trip",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/trips/:trip_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "trips",
+                ":trip_id"
+              ],
+              "variable": [
+                {
+                  "key": "trip_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Get detailed trip information"
+          }
+        },
+        {
+          "name": "Update Trip",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/trips/:trip_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "trips",
+                ":trip_id"
+              ],
+              "variable": [
+                {
+                  "key": "trip_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Update trip information",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"base_fare\": 54.99,\n  \"amenities\": \"WiFi, AC, Reclining Seats, USB Charging\",\n  \"status\": \"scheduled\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Trip",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/trips/:trip_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "trips",
+                ":trip_id"
+              ],
+              "variable": [
+                {
+                  "key": "trip_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Delete a trip (only if no confirmed bookings)"
+          }
+        },
+        {
+          "name": "Create Seats for Trip",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/trips/:trip_id/seats",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "trips",
+                ":trip_id",
+                "seats"
+              ],
+              "variable": [
+                {
+                  "key": "trip_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Bulk create seats for a trip",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"seats\": [\n    {\n      \"seat_number\": \"A1\",\n      \"seat_class\": \"economy\",\n      \"price_multiplier\": 1.0\n    },\n    {\n      \"seat_number\": \"A2\",\n      \"seat_class\": \"economy\",\n      \"price_multiplier\": 1.0\n    },\n    {\n      \"seat_number\": \"B1\",\n      \"seat_class\": \"business\",\n      \"price_multiplier\": 1.5\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Update Seat",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/trips/:trip_id/seats/:seat_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "trips",
+                ":trip_id",
+                "seats",
+                ":seat_id"
+              ],
+              "variable": [
+                {
+                  "key": "trip_id",
+                  "value": "1"
+                },
+                {
+                  "key": "seat_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Update seat details",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"seat_class\": \"business\",\n  \"price_multiplier\": 1.5,\n  \"status\": \"available\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Trip Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/trips/statistics",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "trips",
+                "statistics"
+              ]
+            },
+            "description": "**Admin Only:** Get statistics about trips"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔧 Admin - Bookings",
+      "description": "Admin endpoints for booking management",
+      "item": [
+        {
+          "name": "Get All Bookings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/bookings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "bookings"
+              ],
+              "query": [
+                {
+                  "key": "booking_status",
+                  "value": "confirmed",
+                  "description": "Filter by booking status",
+                  "disabled": true
+                },
+                {
+                  "key": "payment_status",
+                  "value": "paid",
+                  "description": "Filter by payment status",
+                  "disabled": true
+                },
+                {
+                  "key": "user_id",
+                  "value": "1",
+                  "description": "Filter by user ID",
+                  "disabled": true
+                },
+                {
+                  "key": "trip_id",
+                  "value": "1",
+                  "description": "Filter by trip ID",
+                  "disabled": true
+                },
+                {
+                  "key": "date_from",
+                  "value": "2025-11-26",
+                  "description": "From date",
+                  "disabled": true
+                },
+                {
+                  "key": "date_to",
+                  "value": "2025-12-26",
+                  "description": "To date",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Results limit"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Pagination offset"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Get all bookings with filtering"
+          }
+        },
+        {
+          "name": "Get Booking",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/bookings/:booking_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "bookings",
+                ":booking_id"
+              ],
+              "variable": [
+                {
+                  "key": "booking_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Get detailed booking information"
+          }
+        },
+        {
+          "name": "Update Booking",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/bookings/:booking_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "bookings",
+                ":booking_id"
+              ],
+              "variable": [
+                {
+                  "key": "booking_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Update booking status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_status\": \"confirmed\",\n  \"payment_status\": \"paid\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/bookings/:booking_id/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "bookings",
+                ":booking_id",
+                "cancel"
+              ],
+              "variable": [
+                {
+                  "key": "booking_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Cancel a booking"
+          }
+        },
+        {
+          "name": "Get Booking Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/bookings/statistics",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "bookings",
+                "statistics"
+              ]
+            },
+            "description": "**Admin Only:** Get booking statistics"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔧 Admin - Promo Codes",
+      "description": "Admin endpoints for promo code management",
+      "item": [
+        {
+          "name": "Create Promo Code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/promo-codes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "promo-codes"
+              ]
+            },
+            "description": "**Admin Only:** Create a new promo code",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SUMMER2024\",\n  \"description\": \"Summer 2024 Special Discount\",\n  \"discount_percentage\": 15.0,\n  \"max_discount_amount\": 50.0,\n  \"min_purchase_amount\": 100.0,\n  \"usage_limit\": 100,\n  \"user_usage_limit\": 1,\n  \"valid_from\": \"2025-11-26T09:25:44.166823+00:00Z\",\n  \"valid_until\": \"2025-12-26T09:25:44.166823+00:00Z\",\n  \"is_active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get All Promo Codes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/promo-codes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "promo-codes"
+              ],
+              "query": [
+                {
+                  "key": "is_active",
+                  "value": "true",
+                  "description": "Filter by active status",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Results limit"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Pagination offset"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Get all promo codes"
+          }
+        },
+        {
+          "name": "Get Promo Code",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/promo-codes/:promo_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "promo-codes",
+                ":promo_id"
+              ],
+              "variable": [
+                {
+                  "key": "promo_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Get detailed promo code information"
+          }
+        },
+        {
+          "name": "Update Promo Code",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/promo-codes/:promo_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "promo-codes",
+                ":promo_id"
+              ],
+              "variable": [
+                {
+                  "key": "promo_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Update promo code",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"discount_percentage\": 20.0,\n  \"max_discount_amount\": 75.0,\n  \"is_active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Promo Code",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/promo-codes/:promo_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "promo-codes",
+                ":promo_id"
+              ],
+              "variable": [
+                {
+                  "key": "promo_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Delete a promo code"
+          }
+        },
+        {
+          "name": "Get Promo Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/promo-codes/statistics",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "promo-codes",
+                "statistics"
+              ]
+            },
+            "description": "**Admin Only:** Get promo code usage statistics"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔧 Admin - Payments",
+      "description": "Admin endpoints for payment management",
+      "item": [
+        {
+          "name": "Get All Payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "payments"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "success",
+                  "description": "Filter by status",
+                  "disabled": true
+                },
+                {
+                  "key": "payment_method",
+                  "value": "credit_card",
+                  "description": "Filter by payment method",
+                  "disabled": true
+                },
+                {
+                  "key": "user_id",
+                  "value": "1",
+                  "description": "Filter by user ID",
+                  "disabled": true
+                },
+                {
+                  "key": "booking_id",
+                  "value": "1",
+                  "description": "Filter by booking ID",
+                  "disabled": true
+                },
+                {
+                  "key": "date_from",
+                  "value": "2025-11-26",
+                  "description": "From date",
+                  "disabled": true
+                },
+                {
+                  "key": "date_to",
+                  "value": "2025-12-26",
+                  "description": "To date",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Results limit"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Pagination offset"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Get all payment transactions"
+          }
+        },
+        {
+          "name": "Get Payment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/payments/:payment_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "payments",
+                ":payment_id"
+              ],
+              "variable": [
+                {
+                  "key": "payment_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Get detailed payment information"
+          }
+        },
+        {
+          "name": "Get Payment Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/payments/statistics",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "payments",
+                "statistics"
+              ]
+            },
+            "description": "**Admin Only:** Get payment statistics and revenue data"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔧 Admin - Analytics",
+      "description": "Admin endpoints for analytics and reporting",
+      "item": [
+        {
+          "name": "Get Dashboard Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/analytics/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "analytics",
+                "dashboard"
+              ]
+            },
+            "description": "**Admin Only:** Get dashboard summary with key metrics"
+          }
+        },
+        {
+          "name": "Get Revenue Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/analytics/revenue",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "analytics",
+                "revenue"
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month",
+                  "description": "Period: day, week, month, year"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2025-10-27",
+                  "description": "Start date",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2025-11-26",
+                  "description": "End date",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "**Admin Only:** Get revenue analytics"
+          }
+        },
+        {
+          "name": "Get Booking Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/analytics/bookings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "analytics",
+                "bookings"
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month",
+                  "description": "Period: day, week, month, year"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Get booking analytics and trends"
+          }
+        },
+        {
+          "name": "Get Popular Routes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/analytics/popular-routes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "analytics",
+                "popular-routes"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of routes to return"
+                }
+              ]
+            },
+            "description": "**Admin Only:** Get most popular routes"
+          }
+        },
+        {
+          "name": "Get User Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/analytics/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "analytics",
+                "users"
+              ]
+            },
+            "description": "**Admin Only:** Get user registration and activity analytics"
+          }
+        }
+      ]
+    }
+  ]
+}

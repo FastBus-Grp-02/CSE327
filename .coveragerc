@@ -1,0 +1,17 @@
+[run]
+source = app
+omit = 
+    */tests/*
+    */migrations/*
+    */__pycache__/*
+    */venv/*
+    */env/*
+
+[report]
+precision = 2
+show_missing = True
+skip_covered = False
+
+[html]
+directory = htmlcov
+

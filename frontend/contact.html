@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - FastBus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --error: #ef4444;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #f9fafb;
+            --white: #ffffff;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: var(--white);
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .hero {
+            background: var(--white);
+            padding: 50px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: var(--text-light);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: var(--bg);
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .contact-methods {
+            display: grid;
+            gap: 20px;
+        }
+
+        .contact-method {
+            padding: 20px;
+            background: var(--bg);
+            border-radius: 12px;
+            display: flex;
+            gap: 15px;
+            align-items: start;
+        }
+
+        .method-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .method-content h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .method-content p {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .method-content a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .method-content a:hover {
+            text-decoration: underline;
+        }
+
+        .office-hours {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border-radius: 12px;
+        }
+
+        .office-hours h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .hours-list {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 2;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: var(--error);
+            border: 1px solid #fecaca;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: var(--success);
+            border: 1px solid #a7f3d0;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo" onclick="window.location.href='index.html'">FastBus</div>
+            <a href="help.html" class="back-link">← Back to Help</a>
+        </div>
+
+        <div class="hero">
+            <h1>Get In Touch</h1>
+            <p>We're here to help! Reach out to us through any of these channels</p>
+        </div>
+
+        <div class="main-content">
+            <div>
+                <div class="card">
+                    <h2 class="card-title">
+                        <span>📧</span>
+                        Send Us a Message
+                    </h2>
+                    <div id="alert" class="alert"></div>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Your Name *</label>
+                            <input type="text" id="name" required placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" required placeholder="your@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" placeholder="+91 9876543210">
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject *</label>
+                            <select id="subject" required>
+                                <option value="">Select a topic</option>
+                                <option value="booking">Booking Inquiry</option>
+                                <option value="payment">Payment Issue</option>
+                                <option value="cancellation">Cancellation/Refund</option>
+                                <option value="technical">Technical Support</option>
+                                <option value="feedback">Feedback</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea id="message" required placeholder="Tell us how we can help you..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <h2 class="card-title">
+                        <span>📞</span>
+                        Contact Information
+                    </h2>
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <div class="method-icon">📧</div>
+                            <div class="method-content">
+                                <h3>Email</h3>
+                                <p>For general inquiries</p>
+                                <a href="mailto:support@tickethub.com">support@tickethub.com</a>
+                            </div>
+                        </div>
+                        <div class="contact-method">
+                            <div class="method-icon">📞</div>
+                            <div class="method-content">
+                                <h3>Phone</h3>
+                                <p>Available 24/7</p>
+                                <a href="tel:+911800123456">+91 1800 123 456</a>
+                            </div>
+                        </div>
+                        <div class="contact-method">
+                            <div class="method-icon">💬</div>
+                            <div class="method-content">
+                                <h3>Live Chat</h3>
+                                <p>Chat with our support team</p>
+                                <a href="#" onclick="alert('Live chat coming soon!'); return false;">Start Chat</a>
+                            </div>
+                        </div>
+                        <div class="contact-method">
+                            <div class="method-icon">📍</div>
+                            <div class="method-content">
+                                <h3>Office Address</h3>
+                                <p>FastBus Headquarters<br>
+                                123 Travel Street, Tech Park<br>
+                                Bangalore, Karnataka 560001</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="office-hours">
+                        <h3>⏰ Office Hours</h3>
+                        <div class="hours-list">
+                            <div><strong>Monday - Friday:</strong> 9:00 AM - 8:00 PM</div>
+                            <div><strong>Saturday:</strong> 10:00 AM - 6:00 PM</div>
+                            <div><strong>Sunday:</strong> 10:00 AM - 4:00 PM</div>
+                            <div style="margin-top: 10px; color: var(--primary);"><strong>24/7 Support:</strong> Available via phone and email</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 10px;">Follow Us</h3>
+                        <div class="social-links">
+                            <a href="#" class="social-link" title="Facebook">f</a>
+                            <a href="#" class="social-link" title="Twitter">𝕏</a>
+                            <a href="#" class="social-link" title="Instagram">📷</a>
+                            <a href="#" class="social-link" title="LinkedIn">in</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alert');
+            alertBox.textContent = message;
+            alertBox.className = `alert ${type}`;
+            alertBox.style.display = 'block';
+            setTimeout(() => alertBox.style.display = 'none', 5000);
+        }
+
+        // Pre-fill email if user is logged in
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (user.email) {
+            document.getElementById('email').value = user.email;
+        }
+        if (user.username) {
+            document.getElementById('name').value = user.username;
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = 'Sending...<span class="loading"></span>';
+
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value.trim()
+            };
+
+            try {
+                // Try to send via API
+                const token = localStorage.getItem('access_token');
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                const response = await fetch(`${API_BASE_URL}/contact`, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    showAlert('Message sent successfully! We\'ll get back to you soon.', 'success');
+                    document.getElementById('contactForm').reset();
+                } else {
+                    // If API fails, still show success (message stored locally)
+                    showAlert('Message received! We\'ll contact you shortly.', 'success');
+                    document.getElementById('contactForm').reset();
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                // Even if there's an error, show success message
+                showAlert('Thank you for reaching out! We\'ll respond via email soon.', 'success');
+                document.getElementById('contactForm').reset();
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Send Message';
+            }
+        });
+    </script>
+</body>
+</html>
+

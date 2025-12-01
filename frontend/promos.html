@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promo Codes - FastBus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #f9fafb;
+            --white: #ffffff;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: var(--white);
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--bg);
+            color: var(--primary);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 50px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--white);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .filters {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .promos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .promo-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .promo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .promo-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: var(--white);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .promo-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .promo-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .promo-description {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .promo-discount {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .promo-code-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .promo-code {
+            flex: 1;
+            padding: 12px;
+            background: var(--bg);
+            border: 2px dashed var(--primary);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            color: var(--primary);
+            letter-spacing: 2px;
+        }
+
+        .copy-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .promo-details {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        .promo-details div {
+            margin-bottom: 5px;
+        }
+
+        .promo-expiry {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: var(--success);
+            border: 1px solid #a7f3d0;
+        }
+
+        .empty-state {
+            background: var(--white);
+            padding: 60px 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            color: var(--text-light);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--white);
+            font-size: 18px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .promos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .nav-link {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo" onclick="window.location.href='index.html'">FastBus</div>
+            <div class="nav-links">
+                <a href="search.html" class="nav-link">Search Trips</a>
+                <a href="my-bookings.html" class="nav-link">My Bookings</a>
+                <a href="help.html" class="nav-link">Help</a>
+            </div>
+        </div>
+
+        <div class="hero">
+            <h1>🎁 Active Promotions</h1>
+            <p>Save more on your trips with our exclusive promo codes</p>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all" onclick="filterPromos('all')">All Promos</button>
+            <button class="filter-btn" data-filter="active" onclick="filterPromos('active')">Active</button>
+            <button class="filter-btn" data-filter="percentage" onclick="filterPromos('percentage')">Percentage Off</button>
+            <button class="filter-btn" data-filter="flat" onclick="filterPromos('flat')">Flat Discount</button>
+        </div>
+
+        <div id="loadingState" class="loading">
+            <div class="spinner"></div>
+            Loading promo codes...
+        </div>
+
+        <div id="promosGrid" class="promos-grid" style="display: none;"></div>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <div class="empty-icon">🎫</div>
+            <h2 class="empty-title">No Promo Codes Available</h2>
+            <p class="empty-text">Check back later for exciting offers!</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let allPromos = [];
+        let currentFilter = 'all';
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alert');
+            alertBox.textContent = message;
+            alertBox.className = `alert ${type}`;
+            alertBox.style.display = 'block';
+            setTimeout(() => alertBox.style.display = 'none', 3000);
+        }
+
+        async function loadPromos() {
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('promosGrid').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/promos`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    allPromos = data.promos || data || [];
+                    
+                    document.getElementById('loadingState').style.display = 'none';
+
+                    if (allPromos.length === 0) {
+                        document.getElementById('emptyState').style.display = 'block';
+                    } else {
+                        displayPromos(allPromos);
+                    }
+                } else {
+                    throw new Error('Failed to load promos');
+                }
+            } catch (error) {
+                console.error('Error loading promos:', error);
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        function displayPromos(promos) {
+            const grid = document.getElementById('promosGrid');
+            grid.style.display = 'grid';
+
+            if (promos.length === 0) {
+                grid.style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+                return;
+            }
+
+            grid.innerHTML = promos.map(promo => {
+                const isActive = new Date(promo.valid_until) > new Date();
+                const expiryDate = new Date(promo.valid_until).toLocaleDateString('en-IN', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+
+                return `
+                    <div class="promo-card">
+                        ${isActive ? '<span class="promo-badge">Active</span>' : '<span class="promo-badge" style="background: #ef4444;">Expired</span>'}
+                        <div class="promo-icon">🎉</div>
+                        <div class="promo-title">${promo.description || 'Special Discount'}</div>
+                        <div class="promo-discount">${promo.discount_percent}% OFF</div>
+                        <p class="promo-description">
+                            ${promo.description || 'Get amazing discount on your next booking!'}
+                        </p>
+                        <div class="promo-code-box">
+                            <div class="promo-code" id="code-${promo.id}">${promo.code}</div>
+                            <button class="copy-btn" onclick="copyCode('${promo.code}', ${promo.id})">📋 Copy</button>
+                        </div>
+                        <div class="promo-details">
+                            <div>💰 Save up to ${promo.discount_percent}% on your booking</div>
+                            <div>📅 Valid until: ${expiryDate}</div>
+                            ${promo.min_booking_amount ? `<div>💵 Min. booking: ৳${promo.min_booking_amount}</div>` : ''}
+                            ${promo.max_uses ? `<div>👥 Max uses: ${promo.max_uses}</div>` : ''}
+                        </div>
+                        ${!isActive ? '<div class="promo-expiry">⚠️ This promo code has expired</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterPromos(filter) {
+            currentFilter = filter;
+
+            // Update filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+
+            // Filter promos
+            let filtered = allPromos;
+            
+            if (filter === 'active') {
+                filtered = allPromos.filter(p => new Date(p.valid_until) > new Date());
+            } else if (filter === 'percentage') {
+                filtered = allPromos.filter(p => p.discount_percent > 0);
+            } else if (filter === 'flat') {
+                filtered = allPromos.filter(p => p.discount_amount && p.discount_amount > 0);
+            }
+
+            displayPromos(filtered);
+        }
+
+        function copyCode(code, promoId) {
+            // Copy to clipboard
+            navigator.clipboard.writeText(code).then(() => {
+                showAlert(`Promo code "${code}" copied to clipboard!`, 'success');
+                
+                // Visual feedback
+                const codeElement = document.getElementById(`code-${promoId}`);
+                const originalBg = codeElement.style.background;
+                codeElement.style.background = 'linear-gradient(135deg, var(--success), #059669)';
+                codeElement.style.color = 'white';
+                
+                setTimeout(() => {
+                    codeElement.style.background = originalBg;
+                    codeElement.style.color = 'var(--primary)';
+                }, 1000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                showAlert('Failed to copy code', 'error');
+            });
+        }
+
+        // Load promos on page load
+        loadPromos();
+    </script>
+</body>
+</html>
+

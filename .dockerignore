@@ -1,0 +1,101 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+.DS_Store
+*.code-workspace
+
+# Environment files
+.env
+.env.*
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+
+# Testing
+# tests/
+# test_*.py
+# *_test.py
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Project specific documentation
+API_EXAMPLES.md
+PROJECT_OVERVIEW.md
+POSTMAN_GENERATOR_USAGE.txt
+SETUP_GUIDE.md
+README.md
+
+# Postman
+TicketHub.postman_collection.json
+generate_postman_collection.py
+
+# Setup scripts (not needed in container)
+setup.bat
+setup.sh
+seed_db.bat
+seed_db.sh
+
+# Docker files (not needed in image)
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+docker-stack.yml
+
+# Backups
+backups/
+
+# Nginx configs (mounted separately)
+nginx/
+
+# Scripts (some mounted separately)
+scripts/
+
+# Monitoring
+monitoring/
+
+# Kubernetes
+k8s/
+
+# Makefile
+Makefile
