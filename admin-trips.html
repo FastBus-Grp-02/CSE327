@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Management - FastBus Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: var(--dark);
+            font-size: 28px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .trips-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .trips-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .trips-header h2 {
+            color: var(--dark);
+            font-size: 20px;
+        }
+
+        .trips-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .trips-table thead {
+            background: var(--light);
+        }
+
+        .trips-table th,
+        .trips-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .trips-table th {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .trips-table td {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-scheduled {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-in_progress {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            color: var(--dark);
+            font-size: 24px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+
+        .error {
+            background: #fee2e2;
+            color: var(--danger);
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        .success {
+            background: #d1fae5;
+            color: var(--success);
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .seats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .seat {
+            padding: 12px 8px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .seat.available {
+            background: #d1fae5;
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .seat.booked {
+            background: #fee2e2;
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .trip-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .detail-item {
+            padding: 12px;
+            background: var(--light);
+            border-radius: 6px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .trips-table {
+                font-size: 12px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚌 Trip Management</h1>
+            <div class="header-actions">
+                <a href="admin-dashboard.html" class="btn btn-secondary">Dashboard</a>
+                <button class="btn btn-primary" onclick="openCreateModal()">+ Create Trip</button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="filterStatus">
+                        <option value="">All Statuses</option>
+                        <option value="scheduled">Scheduled</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Origin</label>
+                    <input type="text" id="filterOrigin" placeholder="Enter origin city">
+                </div>
+                <div class="filter-group">
+                    <label>Destination</label>
+                    <input type="text" id="filterDestination" placeholder="Enter destination city">
+                </div>
+                <div class="filter-group">
+                    <label>From Date</label>
+                    <input type="date" id="filterDateFrom">
+                </div>
+                <div class="filter-group">
+                    <label>To Date</label>
+                    <input type="date" id="filterDateTo">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="loadTrips()">Apply Filters</button>
+        </div>
+
+        <!-- Trips List -->
+        <div class="trips-card">
+            <div class="trips-header">
+                <h2>All Trips</h2>
+                <div id="tripCount"></div>
+            </div>
+            
+            <div id="errorContainer"></div>
+            <div id="loadingContainer" class="loading" style="display: none;">Loading trips...</div>
+            
+            <div style="overflow-x: auto;">
+                <table class="trips-table" id="tripsTable">
+                    <thead>
+                        <tr>
+                            <th>Trip #</th>
+                            <th>Route</th>
+                            <th>Departure</th>
+                            <th>Arrival</th>
+                            <th>Fare</th>
+                            <th>Seats</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tripsTableBody">
+                        <!-- Trips will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination">
+                <button onclick="previousPage()" id="prevBtn">Previous</button>
+                <span id="pageInfo"></span>
+                <button onclick="nextPage()" id="nextBtn">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Trip Modal -->
+    <div class="modal" id="tripModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Create New Trip</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div id="modalError"></div>
+            
+            <form id="tripForm" onsubmit="submitTrip(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Trip Number *</label>
+                        <input type="text" id="tripNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Operator Name *</label>
+                        <input type="text" id="operatorName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Origin *</label>
+                        <input type="text" id="origin" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Destination *</label>
+                        <input type="text" id="destination" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Departure Time *</label>
+                        <input type="datetime-local" id="departureTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Arrival Time *</label>
+                        <input type="datetime-local" id="arrivalTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Base Fare *</label>
+                        <input type="number" id="baseFare" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Total Seats *</label>
+                        <input type="number" id="totalSeats" min="1" max="500" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Vehicle Type</label>
+                        <input type="text" id="vehicleType" placeholder="e.g., Bus, Van">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Amenities</label>
+                        <textarea id="amenities" placeholder="e.g., WiFi, AC, Reclining Seats"></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Trip</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Trip Details Modal -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Trip Details</h2>
+                <button class="close-btn" onclick="closeDetailsModal()">&times;</button>
+            </div>
+            
+            <div id="tripDetailsContent">
+                <!-- Trip details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let currentPage = 0;
+        let pageLimit = 20;
+        let totalCount = 0;
+        let editingTripId = null;
+
+        // Get JWT token from localStorage
+        function getAuthToken() {
+            return localStorage.getItem('access_token');
+        }
+
+        // Check if user is authenticated
+        function checkAuth() {
+            const token = getAuthToken();
+            if (!token) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
+        // API request helper
+        async function apiRequest(url, options = {}) {
+            const token = getAuthToken();
+            const headers = {
+                'Content-Type': 'application/json',
+                ...options.headers
+            };
+            
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
+            const response = await fetch(url, {
+                ...options,
+                headers
+            });
+
+            if (response.status === 401) {
+                localStorage.removeItem('access_token');
+                window.location.href = 'login.html';
+                throw new Error('Unauthorized');
+            }
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'API request failed');
+            }
+
+            return response.json();
+        }
+
+        // Show error
+        function showError(message, container = 'errorContainer') {
+            const errorContainer = document.getElementById(container);
+            errorContainer.innerHTML = `<div class="error">⚠️ ${message}</div>`;
+            setTimeout(() => {
+                errorContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        // Show success
+        function showSuccess(message, container = 'errorContainer') {
+            const errorContainer = document.getElementById(container);
+            errorContainer.innerHTML = `<div class="success">✓ ${message}</div>`;
+            setTimeout(() => {
+                errorContainer.innerHTML = '';
+            }, 3000);
+        }
+
+        // Load trips
+        async function loadTrips() {
+            if (!checkAuth()) return;
+
+            const status = document.getElementById('filterStatus').value;
+            const origin = document.getElementById('filterOrigin').value;
+            const destination = document.getElementById('filterDestination').value;
+            const dateFrom = document.getElementById('filterDateFrom').value;
+            const dateTo = document.getElementById('filterDateTo').value;
+
+            let queryParams = `limit=${pageLimit}&offset=${currentPage * pageLimit}`;
+            if (status) queryParams += `&status=${status}`;
+            if (origin) queryParams += `&origin=${origin}`;
+            if (destination) queryParams += `&destination=${destination}`;
+            if (dateFrom) queryParams += `&date_from=${dateFrom}`;
+            if (dateTo) queryParams += `&date_to=${dateTo}`;
+
+            document.getElementById('loadingContainer').style.display = 'block';
+            document.getElementById('errorContainer').innerHTML = '';
+
+            try {
+                const data = await apiRequest(`${API_BASE_URL}/admin/trips?${queryParams}`);
+                totalCount = data.total_count;
+                populateTripsTable(data.trips);
+                updatePagination();
+                document.getElementById('tripCount').textContent = `Total: ${totalCount} trips`;
+            } catch (error) {
+                console.error('Error loading trips:', error);
+                showError(error.message || 'Failed to load trips');
+            } finally {
+                document.getElementById('loadingContainer').style.display = 'none';
+            }
+        }
+
+        // Populate trips table
+        function populateTripsTable(trips) {
+            const tbody = document.getElementById('tripsTableBody');
+            
+            if (trips.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No trips found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = trips.map(trip => `
+                <tr>
+                    <td><strong>${trip.trip_number}</strong></td>
+                    <td>${trip.origin} → ${trip.destination}</td>
+                    <td>${formatDateTime(trip.departure_time)}</td>
+                    <td>${formatDateTime(trip.arrival_time)}</td>
+                    <td>$${Number(trip.base_fare).toFixed(2)}</td>
+                    <td>${trip.available_seats}/${trip.total_seats}</td>
+                    <td><span class="status-badge status-${trip.status}">${trip.status.replace('_', ' ')}</span></td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn btn-sm btn-primary" onclick="viewTripDetails(${trip.id})">View</button>
+                            <button class="btn btn-sm btn-secondary" onclick="window.location.href='admin-trip-edit.html?id=${trip.id}'">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteTrip(${trip.id})">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Format date time
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Pagination
+        function updatePagination() {
+            const totalPages = Math.ceil(totalCount / pageLimit);
+            document.getElementById('pageInfo').textContent = `Page ${currentPage + 1} of ${totalPages}`;
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = currentPage >= totalPages - 1;
+        }
+
+        function previousPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                loadTrips();
+            }
+        }
+
+        function nextPage() {
+            if ((currentPage + 1) * pageLimit < totalCount) {
+                currentPage++;
+                loadTrips();
+            }
+        }
+
+        // Open create modal
+        function openCreateModal() {
+            editingTripId = null;
+            document.getElementById('modalTitle').textContent = 'Create New Trip';
+            document.getElementById('tripForm').reset();
+            document.getElementById('tripNumber').disabled = false;
+            document.getElementById('modalError').innerHTML = '';
+            document.getElementById('tripModal').classList.add('active');
+        }
+
+        // Edit trip
+        async function editTrip(tripId) {
+            try {
+                const data = await apiRequest(`${API_BASE_URL}/admin/trips/${tripId}`);
+                const trip = data.trip;
+                
+                editingTripId = tripId;
+                document.getElementById('modalTitle').textContent = 'Edit Trip';
+                document.getElementById('tripNumber').value = trip.trip_number;
+                document.getElementById('tripNumber').disabled = true;
+                document.getElementById('operatorName').value = trip.operator_name;
+                document.getElementById('origin').value = trip.origin;
+                document.getElementById('destination').value = trip.destination;
+                document.getElementById('departureTime').value = formatDateTimeForInput(trip.departure_time);
+                document.getElementById('arrivalTime').value = formatDateTimeForInput(trip.arrival_time);
+                document.getElementById('baseFare').value = trip.base_fare;
+                document.getElementById('totalSeats').value = trip.total_seats;
+                document.getElementById('totalSeats').disabled = true; // Can't change seat count after creation
+                document.getElementById('vehicleType').value = trip.vehicle_type || '';
+                document.getElementById('amenities').value = trip.amenities || '';
+                
+                document.getElementById('tripModal').classList.add('active');
+            } catch (error) {
+                showError(error.message || 'Failed to load trip details');
+            }
+        }
+
+        // Format datetime for input
+        function formatDateTimeForInput(dateString) {
+            const date = new Date(dateString);
+            return date.toISOString().slice(0, 16);
+        }
+
+        // Submit trip (create or update)
+        async function submitTrip(event) {
+            event.preventDefault();
+            
+            const tripData = {
+                trip_number: document.getElementById('tripNumber').value,
+                operator_name: document.getElementById('operatorName').value,
+                origin: document.getElementById('origin').value,
+                destination: document.getElementById('destination').value,
+                departure_time: new Date(document.getElementById('departureTime').value).toISOString(),
+                arrival_time: new Date(document.getElementById('arrivalTime').value).toISOString(),
+                base_fare: parseFloat(document.getElementById('baseFare').value),
+                total_seats: parseInt(document.getElementById('totalSeats').value),
+                vehicle_type: document.getElementById('vehicleType').value,
+                amenities: document.getElementById('amenities').value
+            };
+
+            try {
+                if (editingTripId) {
+                    // Update existing trip
+                    delete tripData.trip_number; // Can't update trip number
+                    delete tripData.total_seats; // Can't update seat count
+                    await apiRequest(`${API_BASE_URL}/admin/trips/${editingTripId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(tripData)
+                    });
+                    showSuccess('Trip updated successfully!');
+                } else {
+                    // Create new trip
+                    await apiRequest(`${API_BASE_URL}/admin/trips`, {
+                        method: 'POST',
+                        body: JSON.stringify(tripData)
+                    });
+                    showSuccess('Trip created successfully!');
+                }
+                
+                closeModal();
+                loadTrips();
+            } catch (error) {
+                showError(error.message || 'Failed to save trip', 'modalError');
+            }
+        }
+
+        // Delete trip
+        async function deleteTrip(tripId) {
+            if (!confirm('Are you sure you want to delete this trip? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                await apiRequest(`${API_BASE_URL}/admin/trips/${tripId}`, {
+                    method: 'DELETE'
+                });
+                showSuccess('Trip deleted successfully!');
+                loadTrips();
+            } catch (error) {
+                showError(error.message || 'Failed to delete trip');
+            }
+        }
+
+        // View trip details
+        async function viewTripDetails(tripId) {
+            try {
+                const data = await apiRequest(`${API_BASE_URL}/admin/trips/${tripId}`);
+                const trip = data.trip;
+                
+                const detailsHTML = `
+                    <div class="trip-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Trip Number</div>
+                            <div class="detail-value">${trip.trip_number}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Operator</div>
+                            <div class="detail-value">${trip.operator_name}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Route</div>
+                            <div class="detail-value">${trip.origin} → ${trip.destination}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Status</div>
+                            <div class="detail-value"><span class="status-badge status-${trip.status}">${trip.status}</span></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Departure</div>
+                            <div class="detail-value">${formatDateTime(trip.departure_time)}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Arrival</div>
+                            <div class="detail-value">${formatDateTime(trip.arrival_time)}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Duration</div>
+                            <div class="detail-value">${trip.duration_minutes} min</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Base Fare</div>
+                            <div class="detail-value">$${Number(trip.base_fare).toFixed(2)}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Available Seats</div>
+                            <div class="detail-value">${trip.available_seats} / ${trip.total_seats}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Vehicle Type</div>
+                            <div class="detail-value">${trip.vehicle_type || 'N/A'}</div>
+                        </div>
+                    </div>
+                    
+                    ${trip.amenities ? `
+                    <div style="margin-top: 20px;">
+                        <h3 style="margin-bottom: 12px; color: var(--dark);">Amenities</h3>
+                        <p style="color: var(--gray);">${trip.amenities}</p>
+                    </div>
+                    ` : ''}
+                    
+                    ${trip.seats && trip.seats.length > 0 ? `
+                    <div style="margin-top: 20px;">
+                        <h3 style="margin-bottom: 12px; color: var(--dark);">Seats (${trip.seats.length})</h3>
+                        <div class="seats-grid">
+                            ${trip.seats.map(seat => `
+                                <div class="seat ${seat.status}">
+                                    ${seat.seat_number}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : `
+                    <div style="margin-top: 20px;">
+                        <p style="color: var(--gray); text-align: center;">No seat configuration available for this trip.</p>
+                    </div>
+                    `}
+                    
+                    <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
+                        <button class="btn btn-secondary" onclick="window.location.href='admin-trip-edit.html?id=${trip.id}'">Edit Trip</button>
+                        <button class="btn" onclick="closeDetailsModal()">Close</button>
+                    </div>
+                `;
+                
+                document.getElementById('tripDetailsContent').innerHTML = detailsHTML;
+                document.getElementById('detailsModal').classList.add('active');
+            } catch (error) {
+                showError(error.message || 'Failed to load trip details');
+            }
+        }
+
+        // Close modals
+        function closeModal() {
+            document.getElementById('tripModal').classList.remove('active');
+            editingTripId = null;
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('detailsModal').classList.remove('active');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTrips();
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('tripModal').addEventListener('click', (e) => {
+            if (e.target.id === 'tripModal') {
+                closeModal();
+            }
+        });
+
+        document.getElementById('detailsModal').addEventListener('click', (e) => {
+            if (e.target.id === 'detailsModal') {
+                closeDetailsModal();
+            }
+        });
+    </script>
+</body>
+</html>
+

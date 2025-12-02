@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Details - FastBus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --error: #ef4444;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #f9fafb;
+            --white: #ffffff;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: var(--white);
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .trip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .route {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .route-city {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .route-arrow {
+            font-size: 20px;
+            color: var(--text-light);
+        }
+
+        .trip-type {
+            display: inline-block;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .trip-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .seat-map {
+            margin-top: 30px;
+        }
+
+        .class-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .class-tab {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .class-tab:hover {
+            border-color: var(--primary);
+        }
+
+        .class-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .class-info {
+            font-size: 12px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .seats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .seat {
+            aspect-ratio: 1;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .seat:hover {
+            transform: scale(1.05);
+        }
+
+        .seat.available {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .seat.available:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .seat.selected {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .seat.occupied {
+            background: #f3f4f6;
+            color: var(--text-light);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .seat-legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid var(--border);
+        }
+
+        .promo-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--bg);
+            border-radius: 8px;
+        }
+
+        .promo-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .promo-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .promo-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+        }
+
+        .price-breakdown {
+            padding: 20px;
+            background: var(--bg);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .price-row.total {
+            font-size: 18px;
+            font-weight: 700;
+            padding-top: 12px;
+            border-top: 2px solid var(--border);
+            margin-top: 12px;
+        }
+
+        .discount {
+            color: var(--success);
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: var(--error);
+            border: 1px solid #fecaca;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: var(--success);
+            border: 1px solid #a7f3d0;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .seats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .route-city {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">FastBus</div>
+            <button class="btn btn-secondary" onclick="window.location.href='search.html'">← Back to Search</button>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <div class="main-content">
+            <div>
+                <div class="card">
+                    <div class="trip-header">
+                        <div class="route">
+                            <span class="route-city" id="origin">---</span>
+                            <span class="route-arrow">→</span>
+                            <span class="route-city" id="destination">---</span>
+                        </div>
+                        <span class="trip-type" id="tripType">Bus</span>
+                    </div>
+
+                    <div class="trip-info">
+                        <div class="info-item">
+                            <span class="info-label">Departure</span>
+                            <span class="info-value" id="departureTime">---</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Arrival</span>
+                            <span class="info-value" id="arrivalTime">---</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Duration</span>
+                            <span class="info-value" id="duration">---</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Available Seats</span>
+                            <span class="info-value" id="availableSeats">---</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card seat-map">
+                    <h2 class="card-title">Select Your Seat</h2>
+                    
+                    <div class="class-tabs">
+                        <div class="class-tab active" data-class="economy" onclick="selectClass('economy')">
+                            <div>Economy</div>
+                            <div class="class-info" id="economyPrice">৳---</div>
+                        </div>
+                        <div class="class-tab" data-class="business" onclick="selectClass('business')">
+                            <div>Business</div>
+                            <div class="class-info" id="businessPrice">৳---</div>
+                        </div>
+                        <div class="class-tab" data-class="first" onclick="selectClass('first')">
+                            <div>First Class</div>
+                            <div class="class-info" id="firstPrice">৳---</div>
+                        </div>
+                    </div>
+
+                    <div class="seats-grid" id="seatsGrid">
+                        <!-- Seats will be generated dynamically -->
+                    </div>
+
+                    <div class="seat-legend">
+                        <div class="legend-item">
+                            <div class="legend-box" style="background: var(--bg);"></div>
+                            <span>Available</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box" style="background: linear-gradient(135deg, var(--primary), var(--secondary));"></div>
+                            <span>Selected</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box" style="background: #f3f4f6; opacity: 0.5;"></div>
+                            <span>Occupied</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <h2 class="card-title">Booking Summary</h2>
+                    
+                    <div class="price-breakdown">
+                        <div class="price-row">
+                            <span>Base Fare</span>
+                            <span id="baseFare">৳0</span>
+                        </div>
+                        <div class="price-row">
+                            <span>Selected Seat</span>
+                            <span id="selectedSeatDisplay">None</span>
+                        </div>
+                        <div class="price-row discount" id="discountRow" style="display: none;">
+                            <span>Discount</span>
+                            <span id="discountAmount">৳0</span>
+                        </div>
+                        <div class="price-row total">
+                            <span>Total Amount</span>
+                            <span id="totalAmount">৳0</span>
+                        </div>
+                    </div>
+
+                    <div class="promo-section">
+                        <label class="info-label" style="margin-bottom: 10px; display: block;">Have a Promo Code?</label>
+                        <div class="promo-input-group">
+                            <input type="text" id="promoCode" class="promo-input" placeholder="Enter promo code">
+                            <button class="btn btn-secondary" onclick="applyPromo()">Apply</button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-full" onclick="proceedToCheckout()" id="checkoutBtn" disabled>
+                        Select a Seat to Continue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let tripData = null;
+        let selectedClass = 'economy';
+        let selectedSeat = null;
+        let selectedSeatId = null;
+        let appliedPromo = null;
+
+        // Get trip ID from URL query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const tripId = urlParams.get('id');
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alert');
+            alertBox.textContent = message;
+            alertBox.className = `alert ${type}`;
+            alertBox.style.display = 'block';
+            setTimeout(() => alertBox.style.display = 'none', 3000);
+        }
+
+        async function loadTripDetails() {
+            if (!tripId) {
+                showAlert('No trip ID provided', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/trips/${tripId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    tripData = data.trip || data;
+                    displayTripDetails(tripData);
+                    generateSeats();
+                } else {
+                    showAlert(data.error || 'Failed to load trip details', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading trip:', error);
+                showAlert('Failed to load trip details', 'error');
+            }
+        }
+
+        function displayTripDetails(trip) {
+            console.log('Trip data received:', trip);
+            console.log('Seats by class:', trip.seats_by_class);
+            
+            document.getElementById('origin').textContent = trip.origin || 'N/A';
+            document.getElementById('destination').textContent = trip.destination || 'N/A';
+            
+            const tripType = trip.trip_type || trip.vehicle_type || 'Bus';
+            document.getElementById('tripType').textContent = tripType.charAt(0).toUpperCase() + tripType.slice(1);
+            
+            document.getElementById('departureTime').textContent = trip.departure_time 
+                ? new Date(trip.departure_time).toLocaleString() 
+                : 'N/A';
+            document.getElementById('arrivalTime').textContent = trip.arrival_time 
+                ? new Date(trip.arrival_time).toLocaleString() 
+                : 'N/A';
+            
+            // Use duration if available, otherwise format duration_minutes
+            let durationText = trip.duration || 'N/A';
+            if (!trip.duration && trip.duration_minutes) {
+                const hours = Math.floor(trip.duration_minutes / 60);
+                const mins = trip.duration_minutes % 60;
+                durationText = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+            }
+            document.getElementById('duration').textContent = durationText;
+            
+            document.getElementById('availableSeats').textContent = trip.available_seats || 0;
+
+            const baseFare = parseFloat(trip.base_fare) || 0;
+            document.getElementById('economyPrice').textContent = `৳${baseFare.toFixed(2)}`;
+            document.getElementById('businessPrice').textContent = `৳${(baseFare * 1.5).toFixed(2)}`;
+            document.getElementById('firstPrice').textContent = `৳${(baseFare * 2).toFixed(2)}`;
+            
+            updatePricing();
+        }
+
+        function generateSeats() {
+            const grid = document.getElementById('seatsGrid');
+            grid.innerHTML = '';
+            
+            console.log('Generating seats for class:', selectedClass);
+            console.log('Trip data available:', tripData);
+            console.log('Seats by class:', tripData?.seats_by_class);
+            
+            if (!tripData || !tripData.seats_by_class) {
+                console.warn('No seats_by_class data available, using fallback');
+                // Fallback: Generate 20 seats (5 rows of 4)
+                const totalSeats = 20;
+                const occupiedSeats = Math.floor(totalSeats * 0.3); // 30% occupied
+                const occupied = new Set();
+                
+                while (occupied.size < occupiedSeats) {
+                    occupied.add(Math.floor(Math.random() * totalSeats) + 1);
+                }
+
+                for (let i = 1; i <= totalSeats; i++) {
+                    const seat = document.createElement('div');
+                    seat.className = occupied.has(i) ? 'seat occupied' : 'seat available';
+                    seat.textContent = i;
+                    seat.dataset.seat = i;
+                    seat.dataset.seatId = i;
+                    
+                    if (!occupied.has(i)) {
+                        seat.onclick = () => selectSeat(i, i);
+                    }
+                    
+                    grid.appendChild(seat);
+                }
+                console.warn('WARNING: Using fake seat IDs - booking will fail!');
+                return;
+            }
+            
+            // Use actual seats from API
+            const classSeats = tripData.seats_by_class[selectedClass];
+            console.log(`Seats for ${selectedClass} class:`, classSeats);
+            
+            if (!classSeats || !classSeats.seats || classSeats.seats.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No seats available for this class</p>';
+                return;
+            }
+            
+            classSeats.seats.forEach(seat => {
+                const seatDiv = document.createElement('div');
+                seatDiv.className = 'seat';
+                
+                if (seat.status === 'available') {
+                    seatDiv.classList.add('available');
+                    seatDiv.onclick = () => selectSeat(seat.seat_number, seat.id);
+                } else if (seat.status === 'booked') {
+                    seatDiv.classList.add('occupied');
+                } else {
+                    seatDiv.classList.add('occupied'); // blocked seats also shown as occupied
+                }
+                
+                seatDiv.textContent = seat.seat_number;
+                seatDiv.dataset.seat = seat.seat_number;
+                seatDiv.dataset.seatId = seat.id;
+                
+                grid.appendChild(seatDiv);
+            });
+        }
+
+        function selectClass(className) {
+            selectedClass = className;
+            
+            document.querySelectorAll('.class-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-class="${className}"]`).classList.add('active');
+            
+            // Reset seat selection when class changes
+            selectedSeat = null;
+            selectedSeatId = null;
+            
+            // Regenerate seats for the new class
+            generateSeats();
+            
+            updatePricing();
+        }
+
+        function selectSeat(seatNumber, seatId) {
+            // Deselect previous seat
+            if (selectedSeat) {
+                const prevSeat = document.querySelector(`[data-seat="${selectedSeat}"]`);
+                if (prevSeat) prevSeat.classList.remove('selected');
+            }
+
+            // Select new seat
+            selectedSeat = seatNumber;
+            selectedSeatId = seatId;
+            const seat = document.querySelector(`[data-seat="${seatNumber}"]`);
+            seat.classList.add('selected');
+
+            document.getElementById('selectedSeatDisplay').textContent = `Seat ${seatNumber}`;
+            document.getElementById('checkoutBtn').disabled = false;
+            document.getElementById('checkoutBtn').textContent = 'Proceed to Checkout';
+
+            updatePricing();
+        }
+
+        function updatePricing() {
+            if (!tripData) return;
+
+            let baseFare = tripData.base_fare;
+            
+            // Apply class multiplier
+            if (selectedClass === 'business') baseFare *= 1.5;
+            if (selectedClass === 'first') baseFare *= 2;
+
+            let total = baseFare;
+            let discount = 0;
+
+            if (appliedPromo) {
+                discount = (total * appliedPromo.discount_percent) / 100;
+                total -= discount;
+            }
+
+            document.getElementById('baseFare').textContent = `৳${baseFare.toFixed(2)}`;
+            document.getElementById('totalAmount').textContent = `৳${total.toFixed(2)}`;
+            
+            if (discount > 0) {
+                document.getElementById('discountAmount').textContent = `-৳${discount.toFixed(2)}`;
+                document.getElementById('discountRow').style.display = 'flex';
+            }
+        }
+
+        async function applyPromo() {
+            const code = document.getElementById('promoCode').value.trim();
+            if (!code) {
+                showAlert('Please enter a promo code', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/promos/validate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.valid) {
+                    appliedPromo = data.promo;
+                    showAlert(`Promo code applied! ${data.promo.discount_percent}% discount`, 'success');
+                    updatePricing();
+                } else {
+                    showAlert(data.error || 'Invalid promo code', 'error');
+                }
+            } catch (error) {
+                console.error('Error applying promo:', error);
+                showAlert('Failed to apply promo code', 'error');
+            }
+        }
+
+        function proceedToCheckout() {
+            if (!selectedSeat) {
+                showAlert('Please select a seat', 'error');
+                return;
+            }
+
+            if (!selectedSeatId || typeof selectedSeatId === 'string') {
+                showAlert('Invalid seat selection. Please refresh the page and try again.', 'error');
+                console.error('Invalid seat ID:', selectedSeatId);
+                return;
+            }
+
+            console.log('Proceeding to checkout with seat:', selectedSeat, 'ID:', selectedSeatId);
+
+            // Store booking data in sessionStorage
+            const bookingData = {
+                tripId: tripData.id,
+                trip: tripData,
+                selectedSeat,
+                selectedSeatId,
+                selectedClass,
+                appliedPromo
+            };
+
+            sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
+            window.location.href = 'checkout.html';
+        }
+
+        // Load trip details on page load
+        loadTripDetails();
+    </script>
+</body>
+</html>
+
