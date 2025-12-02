@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Details - FastBus Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header h1 {
+            color: var(--dark);
+            font-size: 28px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            color: white;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .card h2 {
+            color: var(--dark);
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .info-item label {
+            font-size: 12px;
+            color: var(--gray);
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .info-item .value {
+            font-size: 15px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-confirmed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .payment-paid {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .payment-unpaid {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .payment-refunded {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .payment-failed {
+            background: #ffe4e6;
+            color: #9f1239;
+        }
+
+        .actions-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .actions-card h2 {
+            color: var(--dark);
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .action-section {
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .action-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .action-section h3 {
+            font-size: 16px;
+            color: var(--dark);
+            margin-bottom: 12px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: var(--dark);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--gray);
+        }
+
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: var(--danger);
+            border: 1px solid #fecaca;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: var(--success);
+            border: 1px solid #a7f3d0;
+        }
+
+        .seats-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .seat-badge {
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .modal-header h3 {
+            color: var(--dark);
+            font-size: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Booking Details</h1>
+            <div class="header-actions">
+                <a href="admin-bookings.html" class="btn btn-secondary">Back to Bookings</a>
+                <button onclick="logout()" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <div id="loadingDiv" class="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 16px;">Loading booking details...</p>
+        </div>
+
+        <div id="contentDiv" style="display: none;">
+            <!-- Booking Information -->
+            <div class="card">
+                <h2>Booking Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Booking Reference</label>
+                        <div class="value" id="bookingReference">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Booking Date</label>
+                        <div class="value" id="bookingDate">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Booking Status</label>
+                        <div class="value" id="bookingStatus">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Payment Status</label>
+                        <div class="value" id="paymentStatus">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Number of Seats</label>
+                        <div class="value" id="numSeats">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Subtotal</label>
+                        <div class="value" id="subtotal">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Discount</label>
+                        <div class="value" id="discount">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Total Amount</label>
+                        <div class="value" id="totalAmount">-</div>
+                    </div>
+                </div>
+                <div class="info-item" style="margin-top: 20px;">
+                    <label>Seat Numbers</label>
+                    <div class="seats-list" id="seatsList"></div>
+                </div>
+            </div>
+
+            <!-- Passenger Information -->
+            <div class="card">
+                <h2>Passenger Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Name</label>
+                        <div class="value" id="passengerName">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Email</label>
+                        <div class="value" id="passengerEmail">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Phone</label>
+                        <div class="value" id="passengerPhone">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>User ID</label>
+                        <div class="value" id="userId">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trip Information -->
+            <div class="card">
+                <h2>Trip Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Trip Number</label>
+                        <div class="value" id="tripNumber">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Route</label>
+                        <div class="value" id="route">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Departure Time</label>
+                        <div class="value" id="departureTime">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Arrival Time</label>
+                        <div class="value" id="arrivalTime">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Bus Type</label>
+                        <div class="value" id="busType">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Price per Seat</label>
+                        <div class="value" id="pricePerSeat">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Promo Code (if applicable) -->
+            <div class="card" id="promoCard" style="display: none;">
+                <h2>Promo Code Applied</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Code</label>
+                        <div class="value" id="promoCode">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Description</label>
+                        <div class="value" id="promoDescription">-</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Discount</label>
+                        <div class="value" id="promoDiscount">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions-card">
+                <h2>Actions</h2>
+
+                <div class="action-section">
+                    <h3>Update Booking Status</h3>
+                    <div class="action-buttons">
+                        <button onclick="updateBookingStatus('pending')" class="btn btn-warning">Set Pending</button>
+                        <button onclick="updateBookingStatus('confirmed')" class="btn btn-success">Confirm</button>
+                        <button onclick="updateBookingStatus('cancelled')" class="btn btn-danger">Cancel</button>
+                        <button onclick="updateBookingStatus('completed')" class="btn btn-primary">Complete</button>
+                    </div>
+                </div>
+
+                <div class="action-section">
+                    <h3>Update Payment Status</h3>
+                    <div class="action-buttons">
+                        <button onclick="updatePaymentStatus('unpaid')" class="btn btn-danger">Mark Unpaid</button>
+                        <button onclick="updatePaymentStatus('paid')" class="btn btn-success">Mark Paid</button>
+                        <button onclick="updatePaymentStatus('refunded')" class="btn btn-warning">Mark Refunded</button>
+                        <button onclick="updatePaymentStatus('failed')" class="btn btn-danger">Mark Failed</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let bookingId = null;
+        let currentBooking = null;
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alert');
+            alertBox.textContent = message;
+            alertBox.className = `alert ${type}`;
+            alertBox.style.display = 'block';
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('access_token');
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            };
+        }
+
+        function checkAuth() {
+            const token = localStorage.getItem('access_token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (!token || user.role !== 'admin') {
+                showAlert('Access denied. Admin privileges required.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return false;
+            }
+            return true;
+        }
+
+        function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        async function loadBookingDetails() {
+            if (!checkAuth()) return;
+
+            const urlParams = new URLSearchParams(window.location.search);
+            bookingId = urlParams.get('id');
+
+            if (!bookingId) {
+                showAlert('Invalid booking ID', 'error');
+                setTimeout(() => {
+                    window.location.href = 'admin-bookings.html';
+                }, 2000);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/bookings/${bookingId}`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (response.status === 401) {
+                    showAlert('Session expired. Please login again.', 'error');
+                    setTimeout(() => logout(), 2000);
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentBooking = data.booking;
+                    displayBookingDetails(data.booking);
+                } else {
+                    showAlert(data.error || 'Failed to load booking details', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'admin-bookings.html';
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Error loading booking:', error);
+                showAlert('Connection error. Please check if the server is running.', 'error');
+            } finally {
+                document.getElementById('loadingDiv').style.display = 'none';
+                document.getElementById('contentDiv').style.display = 'block';
+            }
+        }
+
+        function displayBookingDetails(booking) {
+            // Booking Information
+            document.getElementById('bookingReference').textContent = booking.booking_reference;
+            document.getElementById('bookingDate').textContent = new Date(booking.created_at).toLocaleString();
+            document.getElementById('bookingStatus').innerHTML = `<span class="status-badge status-${booking.booking_status}">${booking.booking_status}</span>`;
+            document.getElementById('paymentStatus').innerHTML = `<span class="status-badge payment-${booking.payment_status}">${booking.payment_status}</span>`;
+            document.getElementById('numSeats').textContent = booking.num_seats;
+            document.getElementById('subtotal').textContent = `$${parseFloat(booking.subtotal).toFixed(2)}`;
+            document.getElementById('discount').textContent = `$${parseFloat(booking.discount_amount).toFixed(2)}`;
+            document.getElementById('totalAmount').innerHTML = `<strong>$${parseFloat(booking.total_amount).toFixed(2)}</strong>`;
+
+            // Seat Numbers
+            const seatsList = document.getElementById('seatsList');
+            seatsList.innerHTML = '';
+            if (booking.seats && booking.seats.length > 0) {
+                booking.seats.forEach(seat => {
+                    const badge = document.createElement('span');
+                    badge.className = 'seat-badge';
+                    badge.textContent = seat.seat_number;
+                    seatsList.appendChild(badge);
+                });
+            }
+
+            // Passenger Information
+            document.getElementById('passengerName').textContent = booking.passenger_name;
+            document.getElementById('passengerEmail').textContent = booking.passenger_email;
+            document.getElementById('passengerPhone').textContent = booking.passenger_phone || 'N/A';
+            document.getElementById('userId').textContent = booking.user_id;
+
+            // Trip Information
+            const trip = booking.trip || {};
+            document.getElementById('tripNumber').textContent = trip.trip_number || 'N/A';
+            document.getElementById('route').textContent = `${trip.origin || 'N/A'} → ${trip.destination || 'N/A'}`;
+            document.getElementById('departureTime').textContent = trip.departure_time ? new Date(trip.departure_time).toLocaleString() : 'N/A';
+            document.getElementById('arrivalTime').textContent = trip.arrival_time ? new Date(trip.arrival_time).toLocaleString() : 'N/A';
+            document.getElementById('busType').textContent = trip.bus_type || 'N/A';
+            document.getElementById('pricePerSeat').textContent = trip.price ? `$${parseFloat(trip.price).toFixed(2)}` : 'N/A';
+
+            // Promo Code
+            if (booking.promo_code) {
+                const promoCard = document.getElementById('promoCard');
+                document.getElementById('promoCode').textContent = booking.promo_code.code;
+                document.getElementById('promoDescription').textContent = booking.promo_code.description;
+                document.getElementById('promoDiscount').textContent = `${booking.promo_code.discount_percentage}%`;
+                promoCard.style.display = 'block';
+            }
+        }
+
+        async function updateBookingStatus(status) {
+            if (!confirm(`Are you sure you want to update booking status to "${status}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/bookings/${bookingId}/status`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ booking_status: status })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert('Booking status updated successfully', 'success');
+                    loadBookingDetails();
+                } else {
+                    showAlert(data.error || 'Failed to update booking status', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating booking status:', error);
+                showAlert('Failed to update booking status', 'error');
+            }
+        }
+
+        async function updatePaymentStatus(status) {
+            if (!confirm(`Are you sure you want to update payment status to "${status}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/bookings/${bookingId}/payment`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ payment_status: status })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert('Payment status updated successfully', 'success');
+                    loadBookingDetails();
+                } else {
+                    showAlert(data.error || 'Failed to update payment status', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating payment status:', error);
+                showAlert('Failed to update payment status', 'error');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAuth()) {
+                loadBookingDetails();
+            }
+        });
+    </script>
+</body>
+</html>
+
