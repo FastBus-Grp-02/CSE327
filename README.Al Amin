@@ -1,0 +1,49 @@
+My focus was on for FrontEnd:
+1. index.html
+2.promos.html
+3.contact.html
+4.help.html
+
+
+BackEnd:
+1. Promo Codes for discount, 
+2. create trips and delete trips,
+3. support issue
+
+
+And testing test_validators.py which shows,
+
+alaminanick@AL-AMINs-MacBook-Pro FastBus % docker-compose exec api pytest tests/test_validators.py/
+======================================== test session starts ========================================
+platform linux -- Python 3.14.0, pytest-7.4.3, pluggy-1.6.0 -- /opt/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /app
+configfile: pytest.ini
+plugins: flask-1.3.0, cov-4.1.0, Faker-20.1.0
+collected 23 items                                                                                  
+
+tests/test_validators.py::TestValidateEmail::test_valid_email PASSED                          [  4%]
+tests/test_validators.py::TestValidateEmail::test_invalid_email PASSED                        [  8%]
+tests/test_validators.py::TestValidatePassword::test_valid_password PASSED                    [ 13%]
+tests/test_validators.py::TestValidatePassword::test_password_too_short PASSED                [ 17%]
+tests/test_validators.py::TestValidatePassword::test_password_no_uppercase PASSED             [ 21%]
+tests/test_validators.py::TestValidatePassword::test_password_no_lowercase PASSED             [ 26%]
+tests/test_validators.py::TestValidatePassword::test_password_no_digit PASSED                 [ 30%]
+tests/test_validators.py::TestValidateUsername::test_valid_username PASSED                    [ 34%]
+tests/test_validators.py::TestValidateUsername::test_username_too_short PASSED                [ 39%]
+tests/test_validators.py::TestValidateUsername::test_username_too_long PASSED                 [ 43%]
+tests/test_validators.py::TestValidateUsername::test_username_invalid_characters PASSED       [ 47%]
+tests/test_validators.py::TestValidateRequiredFields::test_all_fields_present PASSED          [ 52%]
+tests/test_validators.py::TestValidateRequiredFields::test_missing_fields PASSED              [ 56%]
+tests/test_validators.py::TestValidateRequiredFields::test_empty_field_value PASSED           [ 60%]
+tests/test_validators.py::TestValidateRequiredFields::test_none_field_value PASSED            [ 65%]
+tests/test_validators.py::TestValidatePhoneNumber::test_valid_phone_number PASSED             [ 69%]
+tests/test_validators.py::TestValidatePhoneNumber::test_phone_number_too_short PASSED         [ 73%]
+tests/test_validators.py::TestValidatePhoneNumber::test_phone_number_too_long PASSED          [ 78%]
+tests/test_validators.py::TestValidatePhoneNumber::test_phone_number_invalid_characters PASSED [ 82%]
+tests/test_validators.py::TestValidateSeatSelection::test_valid_seat_selection PASSED         [ 86%]
+tests/test_validators.py::TestValidateSeatSelection::test_seat_selection_not_list PASSED      [ 91%]
+tests/test_validators.py::TestValidateSeatSelection::test_seat_selection_empty PASSED         [ 95%]
+tests/test_validators.py::TestValidateSeatSelection::test_seat_selection_duplicates PASSED    [100%]
+
+======================================== 23 passed in 0.09s =========================================
