@@ -1,4 +1,5 @@
 My focus was on for FrontEnd:
+
 1. index.html
 2.promos.html
 3.contact.html
@@ -11,7 +12,7 @@ BackEnd:
 3. support issue
 
 
-And testing test_validators.py which shows,
+And testing for test_validators.py:
 
 alaminanick@AL-AMINs-MacBook-Pro FastBus % docker-compose exec api pytest tests/test_validators.py/
 ======================================== test session starts ========================================
