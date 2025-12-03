@@ -1,4 +1,4 @@
-# TicketHub - Bus Ticket Management System
+# Fastbus - Bus Ticket Management System
 
 A production-ready, fully Dockerized Flask-based REST API for bus ticket management with JWT authentication, role-based access control, Google OAuth integration, and PostgreSQL database.
 
@@ -690,8 +690,7 @@ The application automatically seeds the database when `SEED_DATABASE=true` is se
 
 **What gets seeded:**
 - **2 Admin Users**
-  - Email: `admin@tickethub.com` / Password: `Admin123`
-  - Email: `superadmin@tickethub.com` / Password: `Super123`
+  - Email: `admin@fastbus.com` / Password: `admin123`
 - **10 Customer Users** with realistic data
 - **20+ Bus Trips** across multiple routes
 - **Sample Bookings** with various statuses
@@ -747,7 +746,7 @@ curl "http://localhost:5000/api/trips?origin=New York&destination=Boston"
 ```
 
 ### Using Postman
-Import the provided Postman collection: `TicketHub.postman_collection.json`
+Import the provided Postman collection: `FastBus.postman_collection.json`
 
 ## 📝 License
 

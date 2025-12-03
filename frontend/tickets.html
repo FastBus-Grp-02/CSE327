@@ -656,7 +656,7 @@
                 <div class="ticket-item" onclick="viewTicket(${ticket.id})">
                     <div class="ticket-header">
                         <div>
-                            <div class="ticket-title">${ticket.subject || 'No Subject'}</div>
+                            <div class="ticket-title">${ticket.title || ticket.subject || 'No Subject'}</div>
                             <div class="ticket-id">Ticket #${ticket.id}</div>
                         </div>
                         <span class="ticket-status status-${(ticket.status || 'open').toLowerCase().replace(' ', '-')}">${ticket.status || 'Open'}</span>
@@ -714,7 +714,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <div>
                             <div style="font-size: 12px; color: var(--text-light);">Ticket #${ticket.id}</div>
-                            <div style="font-size: 20px; font-weight: 600; margin-top: 5px;">${ticket.subject}</div>
+                            <div style="font-size: 20px; font-weight: 600; margin-top: 5px;">${ticket.title || ticket.subject || 'No Title'}</div>
                         </div>
                         <span class="ticket-status ${statusClass}">${ticket.status || 'Open'}</span>
                     </div>
@@ -765,7 +765,7 @@
             btn.innerHTML = 'Creating...<span class="loading"></span>';
 
             const ticketData = {
-                subject: document.getElementById('ticketSubject').value.trim(),
+                title: document.getElementById('ticketSubject').value.trim(),
                 category: document.getElementById('ticketCategory').value,
                 priority: document.getElementById('ticketPriority').value,
                 description: document.getElementById('ticketDescription').value.trim()

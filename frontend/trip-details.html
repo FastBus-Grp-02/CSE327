@@ -411,7 +411,8 @@
                 </div>
 
                 <div class="card seat-map">
-                    <h2 class="card-title">Select Your Seat</h2>
+                    <h2 class="card-title">Select Your Seat(s)</h2>
+                    <p style="font-size: 14px; color: var(--text-light); margin-bottom: 15px;">Click on available seats to select them. You can select up to 10 seats.</p>
                     
                     <div class="class-tabs">
                         <div class="class-tab active" data-class="economy" onclick="selectClass('economy')">
@@ -446,6 +447,9 @@
                             <span>Occupied</span>
                         </div>
                     </div>
+                    <p style="text-align: center; font-size: 13px; color: var(--text-light); margin-top: 10px;">
+                        💡 Tip: Click seats again to deselect them
+                    </p>
                 </div>
             </div>
 
@@ -492,9 +496,10 @@
         const API_BASE_URL = 'http://localhost:5000/api';
         let tripData = null;
         let selectedClass = 'economy';
-        let selectedSeat = null;
-        let selectedSeatId = null;
+        let selectedSeats = []; // Array of seat numbers
+        let selectedSeatIds = []; // Array of seat IDs
         let appliedPromo = null;
+        const MAX_SEATS_PER_BOOKING = 10;
 
         // Get trip ID from URL query parameter
         const urlParams = new URLSearchParams(window.location.search);
@@ -642,58 +647,93 @@
             document.querySelector(`[data-class="${className}"]`).classList.add('active');
             
             // Reset seat selection when class changes
-            selectedSeat = null;
-            selectedSeatId = null;
+            selectedSeats = [];
+            selectedSeatIds = [];
             
             // Regenerate seats for the new class
             generateSeats();
             
+            updateSeatDisplay();
             updatePricing();
         }
 
         function selectSeat(seatNumber, seatId) {
-            // Deselect previous seat
-            if (selectedSeat) {
-                const prevSeat = document.querySelector(`[data-seat="${selectedSeat}"]`);
-                if (prevSeat) prevSeat.classList.remove('selected');
+            const seatDiv = document.querySelector(`[data-seat="${seatNumber}"]`);
+            const seatIndex = selectedSeats.indexOf(seatNumber);
+            
+            if (seatIndex > -1) {
+                // Deselect seat
+                selectedSeats.splice(seatIndex, 1);
+                selectedSeatIds.splice(seatIndex, 1);
+                seatDiv.classList.remove('selected');
+            } else {
+                // Check if max seats reached
+                if (selectedSeats.length >= MAX_SEATS_PER_BOOKING) {
+                    showAlert(`You can only book up to ${MAX_SEATS_PER_BOOKING} seats at a time`, 'error');
+                    return;
+                }
+                
+                // Select seat
+                selectedSeats.push(seatNumber);
+                selectedSeatIds.push(seatId);
+                seatDiv.classList.add('selected');
             }
 
-            // Select new seat
-            selectedSeat = seatNumber;
-            selectedSeatId = seatId;
-            const seat = document.querySelector(`[data-seat="${seatNumber}"]`);
-            seat.classList.add('selected');
-
-            document.getElementById('selectedSeatDisplay').textContent = `Seat ${seatNumber}`;
-            document.getElementById('checkoutBtn').disabled = false;
-            document.getElementById('checkoutBtn').textContent = 'Proceed to Checkout';
-
+            updateSeatDisplay();
             updatePricing();
+        }
+
+        function updateSeatDisplay() {
+            const seatDisplay = document.getElementById('selectedSeatDisplay');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            
+            if (selectedSeats.length === 0) {
+                seatDisplay.textContent = 'No seats selected';
+                checkoutBtn.disabled = true;
+                checkoutBtn.textContent = 'Select Seat(s)';
+            } else if (selectedSeats.length === 1) {
+                seatDisplay.textContent = `Seat ${selectedSeats[0]}`;
+                checkoutBtn.disabled = false;
+                checkoutBtn.textContent = 'Proceed to Checkout';
+            } else {
+                seatDisplay.textContent = `${selectedSeats.length} seats: ${selectedSeats.sort((a, b) => a - b).join(', ')}`;
+                checkoutBtn.disabled = false;
+                checkoutBtn.textContent = `Proceed to Checkout (${selectedSeats.length} tickets)`;
+            }
         }
 
         function updatePricing() {
             if (!tripData) return;
 
-            let baseFare = tripData.base_fare;
+            const numSeats = selectedSeats.length || 1; // Show price for at least 1 seat
+            let baseFarePerSeat = tripData.base_fare;
             
             // Apply class multiplier
-            if (selectedClass === 'business') baseFare *= 1.5;
-            if (selectedClass === 'first') baseFare *= 2;
+            if (selectedClass === 'business') baseFarePerSeat *= 1.5;
+            if (selectedClass === 'first') baseFarePerSeat *= 2;
 
-            let total = baseFare;
+            let subtotal = baseFarePerSeat * numSeats;
             let discount = 0;
 
             if (appliedPromo) {
-                discount = (total * appliedPromo.discount_percent) / 100;
-                total -= discount;
+                discount = (subtotal * appliedPromo.discount_percent) / 100;
             }
 
-            document.getElementById('baseFare').textContent = `৳${baseFare.toFixed(2)}`;
+            let total = subtotal - discount;
+
+            // Update display
+            const baseFareText = numSeats > 1 
+                ? `৳${baseFarePerSeat.toFixed(2)} × ${numSeats} = ৳${subtotal.toFixed(2)}`
+                : `৳${baseFarePerSeat.toFixed(2)}`;
+            
+            document.getElementById('baseFare').textContent = baseFareText;
             document.getElementById('totalAmount').textContent = `৳${total.toFixed(2)}`;
             
             if (discount > 0) {
                 document.getElementById('discountAmount').textContent = `-৳${discount.toFixed(2)}`;
                 document.getElementById('discountRow').style.display = 'flex';
+            } else {
+                document.getElementById('discountRow').style.display = 'none';
             }
         }
 
@@ -705,17 +745,28 @@
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/promos/validate`, {
+                const token = localStorage.getItem('access_token');
+                const headers = { 'Content-Type': 'application/json' };
+                
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                const response = await fetch(`${API_BASE_URL}/trips/promo-codes/validate`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: headers,
                     body: JSON.stringify({ code })
                 });
 
                 const data = await response.json();
 
-                if (response.ok && data.valid) {
-                    appliedPromo = data.promo;
-                    showAlert(`Promo code applied! ${data.promo.discount_percent}% discount`, 'success');
+                if (response.ok && data.promo_code) {
+                    appliedPromo = {
+                        code: data.promo_code.code,
+                        description: data.promo_code.description,
+                        discount_percent: data.promo_code.discount_percentage
+                    };
+                    showAlert(`Promo code applied! ${data.promo_code.discount_percentage}% discount`, 'success');
                     updatePricing();
                 } else {
                     showAlert(data.error || 'Invalid promo code', 'error');
@@ -727,27 +778,30 @@
         }
 
         function proceedToCheckout() {
-            if (!selectedSeat) {
-                showAlert('Please select a seat', 'error');
+            if (selectedSeats.length === 0) {
+                showAlert('Please select at least one seat', 'error');
                 return;
             }
 
-            if (!selectedSeatId || typeof selectedSeatId === 'string') {
+            if (selectedSeatIds.length === 0 || selectedSeatIds.some(id => typeof id === 'string')) {
                 showAlert('Invalid seat selection. Please refresh the page and try again.', 'error');
-                console.error('Invalid seat ID:', selectedSeatId);
+                console.error('Invalid seat IDs:', selectedSeatIds);
                 return;
             }
 
-            console.log('Proceeding to checkout with seat:', selectedSeat, 'ID:', selectedSeatId);
+            console.log('Proceeding to checkout with seats:', selectedSeats, 'IDs:', selectedSeatIds);
 
             // Store booking data in sessionStorage
             const bookingData = {
                 tripId: tripData.id,
                 trip: tripData,
-                selectedSeat,
-                selectedSeatId,
+                selectedSeats,
+                selectedSeatIds,
                 selectedClass,
-                appliedPromo
+                appliedPromo,
+                // Keep legacy single seat properties for backward compatibility
+                selectedSeat: selectedSeats[0],
+                selectedSeatId: selectedSeatIds[0]
             };
 
             sessionStorage.setItem('bookingData', JSON.stringify(bookingData));

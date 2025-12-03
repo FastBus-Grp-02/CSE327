@@ -453,7 +453,11 @@
         }
 
         function displaySummary() {
-            const { trip, selectedSeat, selectedClass, appliedPromo } = bookingData;
+            const { trip, selectedSeats, selectedSeat, selectedClass, appliedPromo } = bookingData;
+
+            // Handle both old (single) and new (multiple) seat formats
+            const seats = selectedSeats || [selectedSeat];
+            const numSeats = seats.length;
 
             document.getElementById('origin').textContent = trip.origin || 'N/A';
             document.getElementById('destination').textContent = trip.destination || 'N/A';
@@ -465,26 +469,36 @@
                 ? new Date(trip.departure_time).toLocaleString() 
                 : 'N/A';
             document.getElementById('class').textContent = selectedClass.charAt(0).toUpperCase() + selectedClass.slice(1);
-            document.getElementById('seatNumber').textContent = selectedSeat;
+            
+            // Display seats
+            const seatDisplay = numSeats === 1 
+                ? seats[0] 
+                : `${numSeats} seats (${seats.sort((a, b) => a - b).join(', ')})`;
+            document.getElementById('seatNumber').textContent = seatDisplay;
 
             // Calculate pricing
-            let baseFare = trip.base_fare;
-            if (selectedClass === 'business') baseFare *= 1.5;
-            if (selectedClass === 'first') baseFare *= 2;
+            let baseFarePerSeat = trip.base_fare;
+            if (selectedClass === 'business') baseFarePerSeat *= 1.5;
+            if (selectedClass === 'first') baseFarePerSeat *= 2;
 
-            let total = baseFare;
+            let subtotal = baseFarePerSeat * numSeats;
             let discount = 0;
 
             if (appliedPromo) {
-                discount = (total * appliedPromo.discount_percent) / 100;
-                total -= discount;
+                discount = (subtotal * appliedPromo.discount_percent) / 100;
                 
                 document.getElementById('promoCode').textContent = appliedPromo.code;
                 document.getElementById('discountAmount').textContent = `-৳${discount.toFixed(2)}`;
                 document.getElementById('discountRow').style.display = 'flex';
             }
 
-            document.getElementById('baseFare').textContent = `৳${baseFare.toFixed(2)}`;
+            let total = subtotal - discount;
+
+            const baseFareText = numSeats > 1 
+                ? `৳${baseFarePerSeat.toFixed(2)} × ${numSeats}`
+                : `৳${baseFarePerSeat.toFixed(2)}`;
+            
+            document.getElementById('baseFare').textContent = baseFareText;
             document.getElementById('totalAmount').textContent = `৳${total.toFixed(2)}`;
         }
 
@@ -516,28 +530,36 @@
                 special_requests: document.getElementById('specialRequests').value.trim()
             };
 
-            // Calculate final price
-            let baseFare = bookingData.trip.base_fare;
-            if (bookingData.selectedClass === 'business') baseFare *= 1.5;
-            if (bookingData.selectedClass === 'first') baseFare *= 2;
+            // Handle both old (single) and new (multiple) seat formats
+            const seatIds = bookingData.selectedSeatIds || [bookingData.selectedSeatId];
+            const seats = bookingData.selectedSeats || [bookingData.selectedSeat];
+            const numSeats = seatIds.length;
 
-            let totalAmount = baseFare;
+            // Calculate final price
+            let baseFarePerSeat = bookingData.trip.base_fare;
+            if (bookingData.selectedClass === 'business') baseFarePerSeat *= 1.5;
+            if (bookingData.selectedClass === 'first') baseFarePerSeat *= 2;
+
+            let subtotal = baseFarePerSeat * numSeats;
+            let totalAmount = subtotal;
+            
             if (bookingData.appliedPromo) {
-                const discount = (totalAmount * bookingData.appliedPromo.discount_percent) / 100;
+                const discount = (subtotal * bookingData.appliedPromo.discount_percent) / 100;
                 totalAmount -= discount;
             }
 
             console.log('Booking details:', {
                 trip_id: bookingData.trip.id,
-                selectedSeatId: bookingData.selectedSeatId,
-                selectedSeat: bookingData.selectedSeat,
+                selectedSeatIds: seatIds,
+                selectedSeats: seats,
+                numSeats: numSeats,
                 passenger_name: passengerData.full_name
             });
 
             // Create booking payload - backend expects seat_ids array
             const bookingPayload = {
                 trip_id: bookingData.trip.id,
-                seat_ids: [bookingData.selectedSeatId || parseInt(bookingData.selectedSeat)],
+                seat_ids: seatIds,
                 passenger_name: passengerData.full_name,
                 passenger_email: passengerData.email,
                 passenger_phone: passengerData.phone,
