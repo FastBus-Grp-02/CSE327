@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Tickets - FastBus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #f9fafb;
+            --white: #ffffff;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: var(--white);
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--bg);
+            color: var(--primary);
+        }
+
+        .page-header {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .page-title p {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: var(--bg);
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .tickets-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .ticket-item {
+            padding: 20px;
+            background: var(--bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .ticket-item:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .ticket-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .ticket-id {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .ticket-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-open {
+            background: #dbeafe;
+            color: var(--primary);
+        }
+
+        .status-in-progress {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        .status-resolved {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .status-closed {
+            background: #f3f4f6;
+            color: var(--text-light);
+        }
+
+        .ticket-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .ticket-details {
+            display: none;
+        }
+
+        .ticket-details.active {
+            display: block;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .detail-value {
+            font-size: 15px;
+            color: var(--text);
+            padding: 12px;
+            background: var(--bg);
+            border-radius: 8px;
+        }
+
+        .responses {
+            margin-top: 20px;
+        }
+
+        .response-item {
+            padding: 15px;
+            background: var(--bg);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .response-author {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .response-date {
+            color: var(--text-light);
+        }
+
+        .response-text {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: var(--error);
+            border: 1px solid #fecaca;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: var(--success);
+            border: 1px solid #a7f3d0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .close-btn {
+            font-size: 28px;
+            color: var(--text-light);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: var(--text);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo" onclick="window.location.href='index.html'">FastBus</div>
+            <div class="nav-links">
+                <a href="search.html" class="nav-link">Search Trips</a>
+                <a href="my-bookings.html" class="nav-link">My Bookings</a>
+                <a href="help.html" class="nav-link">Help</a>
+                <a href="profile.html" class="nav-link">Profile</a>
+            </div>
+        </div>
+
+        <div class="page-header">
+            <div class="page-title">
+                <h1>Support Tickets</h1>
+                <p>Create and track your support tickets</p>
+            </div>
+            <button class="btn btn-primary" onclick="openCreateModal()">+ New Ticket</button>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <div class="main-content">
+            <div>
+                <div class="card">
+                    <h2 class="card-title">
+                        <span>🎫</span>
+                        My Tickets
+                    </h2>
+                    <div id="ticketsList" class="tickets-list">
+                        <div class="empty-state">
+                            <div class="empty-icon">📋</div>
+                            <p>Loading tickets...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <h2 class="card-title">
+                        <span>💡</span>
+                        Quick Help
+                    </h2>
+                    <div style="font-size: 14px; color: var(--text-light); line-height: 1.8;">
+                        <p style="margin-bottom: 15px;"><strong>Before creating a ticket:</strong></p>
+                        <ul style="margin-left: 20px; margin-bottom: 15px;">
+                            <li>Check our <a href="help.html" style="color: var(--primary);">FAQ page</a></li>
+                            <li>Search existing tickets</li>
+                            <li>Gather relevant details</li>
+                        </ul>
+                        <p style="margin-bottom: 10px;"><strong>Response time:</strong></p>
+                        <p>We typically respond within 24 hours during business days.</p>
+                    </div>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));">
+                    <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 10px;">Need Immediate Help?</h3>
+                    <p style="font-size: 14px; color: var(--text-light); margin-bottom: 15px;">Contact us directly for urgent issues</p>
+                    <a href="contact.html" class="btn btn-secondary" style="width: 100%; text-align: center;">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Ticket Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create Support Ticket</h2>
+                <button class="close-btn" onclick="closeCreateModal()">&times;</button>
+            </div>
+            <form id="createTicketForm">
+                <div class="form-group">
+                    <label for="ticketSubject">Subject *</label>
+                    <input type="text" id="ticketSubject" required placeholder="Brief description of your issue">
+                </div>
+                <div class="form-group">
+                    <label for="ticketCategory">Category *</label>
+                    <select id="ticketCategory" required>
+                        <option value="">Select category</option>
+                        <option value="booking">Booking Issue</option>
+                        <option value="payment">Payment Problem</option>
+                        <option value="cancellation">Cancellation</option>
+                        <option value="refund">Refund Request</option>
+                        <option value="technical">Technical Issue</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ticketPriority">Priority *</label>
+                    <select id="ticketPriority" required>
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ticketDescription">Description *</label>
+                    <textarea id="ticketDescription" required placeholder="Provide detailed information about your issue..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;" id="submitTicketBtn">Create Ticket</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Ticket Modal -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Ticket Details</h2>
+                <button class="close-btn" onclick="closeViewModal()">&times;</button>
+            </div>
+            <div id="ticketDetailsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let currentTickets = [];
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alert');
+            alertBox.textContent = message;
+            alertBox.className = `alert ${type}`;
+            alertBox.style.display = 'block';
+            setTimeout(() => alertBox.style.display = 'none', 5000);
+        }
+
+        function checkAuth() {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
+        function openCreateModal() {
+            document.getElementById('createModal').classList.add('active');
+        }
+
+        function closeCreateModal() {
+            document.getElementById('createModal').classList.remove('active');
+            document.getElementById('createTicketForm').reset();
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewModal').classList.remove('active');
+        }
+
+        async function loadTickets() {
+            if (!checkAuth()) return;
+
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_BASE_URL}/tickets`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    currentTickets = data.tickets || data || [];
+                    displayTickets(currentTickets);
+                } else if (response.status === 401) {
+                    window.location.href = 'login.html';
+                } else {
+                    displayEmptyState();
+                }
+            } catch (error) {
+                console.error('Error loading tickets:', error);
+                displayEmptyState();
+            }
+        }
+
+        function displayTickets(tickets) {
+            const container = document.getElementById('ticketsList');
+            
+            if (tickets.length === 0) {
+                displayEmptyState();
+                return;
+            }
+
+            container.innerHTML = tickets.map(ticket => `
+                <div class="ticket-item" onclick="viewTicket(${ticket.id})">
+                    <div class="ticket-header">
+                        <div>
+                            <div class="ticket-title">${ticket.subject || 'No Subject'}</div>
+                            <div class="ticket-id">Ticket #${ticket.id}</div>
+                        </div>
+                        <span class="ticket-status status-${(ticket.status || 'open').toLowerCase().replace(' ', '-')}">${ticket.status || 'Open'}</span>
+                    </div>
+                    <div class="ticket-meta">
+                        <span>📁 ${ticket.category || 'General'}</span>
+                        <span>📅 ${new Date(ticket.created_at).toLocaleDateString()}</span>
+                        <span>⚡ ${ticket.priority || 'Medium'}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function displayEmptyState() {
+            const container = document.getElementById('ticketsList');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <p>No support tickets yet</p>
+                    <p style="font-size: 13px; margin-top: 10px;">Create a ticket if you need help</p>
+                </div>
+            `;
+        }
+
+        async function viewTicket(ticketId) {
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_BASE_URL}/tickets/${ticketId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const ticket = await response.json();
+                    displayTicketDetails(ticket);
+                    document.getElementById('viewModal').classList.add('active');
+                } else {
+                    showAlert('Failed to load ticket details', 'error');
+                }
+            } catch (error) {
+                console.error('Error viewing ticket:', error);
+                showAlert('Failed to load ticket details', 'error');
+            }
+        }
+
+        function displayTicketDetails(ticket) {
+            const content = document.getElementById('ticketDetailsContent');
+            const statusClass = `status-${(ticket.status || 'open').toLowerCase().replace(' ', '-')}`;
+            
+            content.innerHTML = `
+                <div class="detail-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <div>
+                            <div style="font-size: 12px; color: var(--text-light);">Ticket #${ticket.id}</div>
+                            <div style="font-size: 20px; font-weight: 600; margin-top: 5px;">${ticket.subject}</div>
+                        </div>
+                        <span class="ticket-status ${statusClass}">${ticket.status || 'Open'}</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-label">Category</div>
+                    <div class="detail-value">${ticket.category || 'General'}</div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-label">Priority</div>
+                    <div class="detail-value">${ticket.priority || 'Medium'}</div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-label">Description</div>
+                    <div class="detail-value" style="white-space: pre-wrap;">${ticket.description || 'No description provided'}</div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-label">Created</div>
+                    <div class="detail-value">${new Date(ticket.created_at).toLocaleString()}</div>
+                </div>
+
+                ${ticket.responses && ticket.responses.length > 0 ? `
+                    <div class="responses">
+                        <div class="detail-label">Responses</div>
+                        ${ticket.responses.map(response => `
+                            <div class="response-item">
+                                <div class="response-header">
+                                    <span class="response-author">${response.author || 'Support Team'}</span>
+                                    <span class="response-date">${new Date(response.created_at).toLocaleString()}</span>
+                                </div>
+                                <div class="response-text">${response.message}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : '<p style="color: var(--text-light); font-size: 14px; margin-top: 20px;">No responses yet. We\'ll get back to you soon!</p>'}
+            `;
+        }
+
+        document.getElementById('createTicketForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('submitTicketBtn');
+            btn.disabled = true;
+            btn.innerHTML = 'Creating...<span class="loading"></span>';
+
+            const ticketData = {
+                subject: document.getElementById('ticketSubject').value.trim(),
+                category: document.getElementById('ticketCategory').value,
+                priority: document.getElementById('ticketPriority').value,
+                description: document.getElementById('ticketDescription').value.trim()
+            };
+
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await fetch(`${API_BASE_URL}/tickets`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(ticketData)
+                });
+
+                if (response.ok) {
+                    showAlert('Ticket created successfully!', 'success');
+                    closeCreateModal();
+                    loadTickets();
+                } else {
+                    const data = await response.json();
+                    showAlert(data.error || 'Failed to create ticket', 'error');
+                }
+            } catch (error) {
+                console.error('Error creating ticket:', error);
+                showAlert('Failed to create ticket', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Create Ticket';
+            }
+        });
+
+        // Close modals on background click
+        document.getElementById('createModal').addEventListener('click', (e) => {
+            if (e.target.id === 'createModal') closeCreateModal();
+        });
+
+        document.getElementById('viewModal').addEventListener('click', (e) => {
+            if (e.target.id === 'viewModal') closeViewModal();
+        });
+
+        // Load tickets on page load
+        loadTickets();
+    </script>
+</body>
+</html>
+
